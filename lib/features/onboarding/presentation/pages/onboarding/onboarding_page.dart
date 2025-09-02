@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/core/themes/app_text_style.dart';
 import 'package:save_up/features/onboarding/presentation/widgets/onboarding_widgets/onboarding_content.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -26,8 +25,10 @@ class OnboardingPage extends StatelessWidget {
               },
               child: Text(
                 'Lewati',
-                style: AppTextStyle.plusJakartaSans16w700.copyWith(
-                  color: AppPallete.primary,
+                style: TextStyle(
+                  color: AppPallete.primary /* Main-Color */,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -35,6 +36,8 @@ class OnboardingPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
+        left: false,
+        right: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Stack(

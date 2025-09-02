@@ -48,4 +48,8 @@ class AppPallete {
   
   //* Navbar Icon
   static const Color navbarInactive = Color(0xFFD3D3D3);
+
+  //* Progress Indicator Colors
+  static const Color progressBackground = Color.fromRGBO(234, 239, 244, 1);
+
 }

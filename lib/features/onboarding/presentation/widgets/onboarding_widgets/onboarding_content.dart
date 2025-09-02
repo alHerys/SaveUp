@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/core/themes/app_text_style.dart';
 
 class OnboardingContent extends StatelessWidget {
   final String title;
@@ -23,23 +22,28 @@ class OnboardingContent extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTextStyle.plusJakartaSans24w700.copyWith(
-            color: AppPallete.primary,
+          style: TextStyle(
+            color: AppPallete.primary /* Main-Color */,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
           ),
         ),
-    
+
         SvgPicture.asset(imagePath),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28.5),
           child: Text(
             description,
             textAlign: TextAlign.center,
-            style: AppTextStyle.plusJakartaSans16w400.copyWith(
-              color: AppPallete.textPrimary,
+            style: TextStyle(
+              color: AppPallete.textPrimary /* Text-Primary-text */,
+              fontSize: 16,
+              fontFamily: 'Plus Jakarta Sans',
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
-        SizedBox(height: 53.8,)
+        SizedBox(height: 53.8),
       ],
     );
   }
