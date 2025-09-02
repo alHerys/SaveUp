@@ -11,8 +11,8 @@ class AppPallete {
 
   //* 2. TEXT COLORS
   // Warna yang digunakan secara spesifik untuk elemen teks.
-  static const Color textDarkGrey = Color.fromRGBO(51, 51, 51, 1);
-  static const Color textLightGrey = Color.fromRGBO(102, 102, 102, 1);
+  static const Color textPrimary = Color.fromRGBO(51, 51, 51, 1);
+  static const Color textSecondary = Color.fromRGBO(102, 102, 102, 1);
   
   //* 3. SEMANTIC COLORS
   // Warna yang memberikan makna atau status tertentu (sukses, peringatan, error).
@@ -46,4 +46,6 @@ class AppPallete {
   // Darker
   static const Color darkerGreen = Color.fromRGBO(20, 50, 21, 1);
   
+  //* Navbar Icon
+  static const Color navbarInactive = Color(0xFFD3D3D3);
 }

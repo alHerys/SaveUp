@@ -35,7 +35,7 @@ class OnboardingContent extends StatelessWidget {
             description,
             textAlign: TextAlign.center,
             style: AppTextStyle.plusJakartaSans16w400.copyWith(
-              color: AppPallete.textDarkGrey,
+              color: AppPallete.textPrimary,
             ),
           ),
         ),

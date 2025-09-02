@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/core/themes/app_text_style.dart';
-import 'package:save_up/presentation/widgets/onboarding_widgets/onboarding_content.dart';
+import 'package:save_up/features/onboarding/presentation/widgets/onboarding_widgets/onboarding_content.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -17,7 +17,13 @@ class OnboardingPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 24.0),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  (route) => false,
+                );
+              },
               child: Text(
                 'Lewati',
                 style: AppTextStyle.plusJakartaSans16w700.copyWith(
@@ -90,7 +96,11 @@ class OnboardingPage extends StatelessWidget {
               curve: Curves.linear,
             );
           } else {
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            );
           }
         },
 
