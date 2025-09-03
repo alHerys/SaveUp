@@ -1,54 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
-import 'package:save_up/features/home/presentation/bloc/home_bloc.dart';
 import 'package:save_up/features/home/presentation/widgets/home_anggaran.dart';
 import 'package:save_up/features/home/presentation/widgets/home_laporan.dart';
 import 'package:save_up/features/home/presentation/widgets/home_pemasukan_pengeluaran.dart';
 import 'package:save_up/features/home/presentation/widgets/home_transaksi_terkini.dart';
-import 'package:save_up/features/home/presentation/widgets/navbar.dart';
 
-List<Widget> screenList = [
-  const HomeWidget(),
-  const HomeWidget(),
-  const AsistenWidget(),
-];
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state) {
-        
-      },
-      builder: (context, state) {
-        return Scaffold(
-          extendBody: true,
-          body: screenList.elementAt(state.tabIndex),
-          bottomNavigationBar: Container(
-            color: Colors.transparent,
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-            child: Navbar(tabIndex: state.tabIndex),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class HomeWidget extends StatelessWidget {
-  const HomeWidget({
+class HomePage extends StatelessWidget {
+  const HomePage({
     super.key,
   });
 

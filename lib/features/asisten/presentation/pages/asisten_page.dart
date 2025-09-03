@@ -1,27 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/home/presentation/widgets/navbar.dart';
 
-class AsistenPage extends StatefulWidget {
-  const AsistenPage({super.key});
-
-  @override
-  State<AsistenPage> createState() => _AsistenPageState();
-}
-
-class _AsistenPageState extends State<AsistenPage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: AsistenWidget(),
-    );
-  }
-}
-
-class AsistenWidget extends StatelessWidget {
-  const AsistenWidget({
+class AsistenPage extends StatelessWidget {
+  const AsistenPage({
     super.key,
   });
 
