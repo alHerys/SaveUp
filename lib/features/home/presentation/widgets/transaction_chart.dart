@@ -5,7 +5,7 @@ import 'package:save_up/core/themes/app_pallete.dart';
 class TransactionChart extends StatefulWidget {
   TransactionChart({super.key});
   final Color leftBarColor = AppPallete.primary;
-  final Color rightBarColor = AppPallete.semanticYellow;
+  final Color rightBarColor = AppPallete.semanticOrange;
   final Color avgColor = AppPallete.primary.avg(AppPallete.semanticYellow);
   @override
   State<StatefulWidget> createState() => TransactionChartState();

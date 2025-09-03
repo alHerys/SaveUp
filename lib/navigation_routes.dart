@@ -1,29 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:save_up/features/asisten/presentation/bloc/home_bloc.dart';
-import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:save_up/features/home/presentation/bloc/home_bloc.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
+import 'package:save_up/features/onboarding/presentation/pages/onboarding/onboarding_page.dart';
 
 class NavigationRoutes {
   final HomeBloc homeBloc = HomeBloc();
-  Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
+  Route generateRoute(RouteSettings settings) {
+    final arguments = settings.arguments;
     switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(
+          builder: (_) =>
+              BlocProvider.value(value: homeBloc, child: const OnboardingPage()),
+        );
       case '/asisten':
         return MaterialPageRoute(
-          builder: (context) => const AsistenPage(),
+          builder: (_) =>
+              BlocProvider.value(value: homeBloc, child: const HomePage()),
         );
       case '/scan':
         return MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (_) =>
+              BlocProvider.value(value: homeBloc, child: const HomePage()),
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (_) =>
+              BlocProvider.value(value: homeBloc, child: const HomePage()),
         );
       default:
         return MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (_) =>
+              BlocProvider.value(value: homeBloc, child: const HomePage()),
         );
     }
   }

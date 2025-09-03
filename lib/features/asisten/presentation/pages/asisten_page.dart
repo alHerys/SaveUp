@@ -11,104 +11,108 @@ class AsistenPage extends StatefulWidget {
 }
 
 class _AsistenPageState extends State<AsistenPage> {
-  int _selectedIndex = 2;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        left: false,
-        right: false,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 48,
-              ),
-              child: Center(
-                child: Column(
-                  spacing: 88,
-                  children: [
-                    Column(
-                      spacing: 3,
+      body: AsistenWidget(),
+    );
+  }
+}
+
+class AsistenWidget extends StatelessWidget {
+  const AsistenWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      left: false,
+      right: false,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 48,
+            ),
+            child: Center(
+              child: Column(
+                spacing: 88,
+                children: [
+                  Column(
+                    spacing: 3,
+                    children: [
+                      Text(
+                        'Budgie',
+                        style: TextStyle(
+                          color: AppPallete.primary /* Main-Color */,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      Text(
+                        'Pencatat Keuangan',
+                        style: TextStyle(
+                          color: AppPallete.textPrimary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SvgPicture.asset('assets/images/Chat Bot Onb.svg'),
+                  Text(
+                    'asisten AI kamu yang siap mencatat setiap transaksi. Cukup sebutkan pengeluaranmu, dan aku akan langsung menyimpannya di sistem.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppPallete.textPrimary /* Text-Primary-text */,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Container(
+                    width: 364,
+                    height: 56,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppPallete.primary),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Budgie',
-                          style: TextStyle(
-                            color: AppPallete.primary /* Main-Color */,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        Text(
-                          'Pencatat Keuangan',
+                          'Catat lewat Budgie',
                           style: TextStyle(
                             color: AppPallete.textPrimary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppPallete.primary,
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/icons/paper-airplane.svg',
                           ),
                         ),
                       ],
                     ),
-                    SvgPicture.asset('assets/images/Chat Bot Onb.svg'),
-                    Text(
-                      'asisten AI kamu yang siap mencatat setiap transaksi. Cukup sebutkan pengeluaranmu, dan aku akan langsung menyimpannya di sistem.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppPallete.textPrimary /* Text-Primary-text */,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Container(
-                      width: 364,
-                      height: 56,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppPallete.primary),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Catat lewat Budgie',
-                            style: TextStyle(
-                              color: AppPallete.textPrimary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppPallete.primary,
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/icons/paper-airplane.svg',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Navbar(selectedIndex: _selectedIndex, onTap: _onItemTapped),
-          ],
-        ),
+          ),
+          // Navbar(selectedIndex: _selectedIndex, onTap: _onItemTapped),
+        ],
       ),
     );
   }

@@ -18,6 +18,7 @@ class AppPallete {
   // Warna yang memberikan makna atau status tertentu (sukses, peringatan, error).
   static const Color semanticRed = Color.fromRGBO(234, 67, 53, 1);
   static const Color semanticYellow = Color.fromRGBO(255, 204, 61, 1);
+  static const Color semanticOrange = Color(0xFFFFA300);
   static const Color semanticGreen = Color.fromRGBO(109, 196, 73, 1);
 
   //* 4. BASE COLORS
