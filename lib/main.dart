@@ -17,19 +17,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppPallete.baseWhite,
-            brightness: Brightness.light,
-          ),
-          textTheme: GoogleFonts.plusJakartaSansTextTheme(
-            Theme.of(context).textTheme,
-          ),
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppPallete.baseWhite,
+          brightness: Brightness.light,
         ),
-        onGenerateRoute: NavigationRoutes().generateRoute,
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
+      onGenerateRoute: NavigationRoutes().generateRoute,
     );
   }
 }

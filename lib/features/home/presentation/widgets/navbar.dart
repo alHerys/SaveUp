@@ -6,9 +6,9 @@ import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/home/presentation/bloc/home_bloc.dart';
 
 class Navbar extends StatefulWidget {
-  int tabIndex;
+  final int tabIndex;
 
-  Navbar({super.key, required this.tabIndex});
+  const Navbar({super.key, required this.tabIndex});
 
   @override
   State<Navbar> createState() => _NavbarState();
