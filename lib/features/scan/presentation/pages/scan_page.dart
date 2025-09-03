@@ -17,12 +17,18 @@ class _ScanPageState extends State<ScanPage> {
   final picker = ImagePicker();
 
   void _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      setState(() {});
+    }
+  }
+
+  void _takeImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       _image = File(pickedFile.path);
-      setState(() {
-        
-      });
+      setState(() {});
     }
   }
 
@@ -58,7 +64,9 @@ class _ScanPageState extends State<ScanPage> {
                   child: Divider(thickness: 5, color: const Color(0xFF98ADC7)),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    _takeImage();
+                  },
                   child: Container(
                     margin: const EdgeInsets.only(top: 30),
                     width: double.infinity,

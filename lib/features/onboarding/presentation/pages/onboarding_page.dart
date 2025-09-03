@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/onboarding/presentation/widgets/onboarding_widgets/onboarding_content.dart';
+import 'package:save_up/features/onboarding/presentation/widgets/onboarding_content.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatelessWidget {
