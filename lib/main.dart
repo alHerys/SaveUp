@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,8 +54,19 @@ class MyApp extends StatelessWidget {
           '/asisten': (context) => const MainPage(),
           '/scan': (context) => const ScanPage(),
           '/home': (context) => const MainPage(),
-          '/review': (context) => const ReviewPage(),
+          // '/review': (context) => const ReviewPage(),
           '/transaksi-terkini': (context) => const TransaksiTerkiniPage(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/review') {
+            final imageFile = settings.arguments as File;
+            return MaterialPageRoute(
+              builder: (context) {
+                return ReviewPage(imageFile: imageFile);
+              },
+            );
+          }
+          return null; // Penting untuk rute lainnya
         },
       ),
     );

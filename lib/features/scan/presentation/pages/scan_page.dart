@@ -16,7 +16,7 @@ class ScanPage extends StatelessWidget {
       child: BlocConsumer<ScanCubit, ScanState>(
         listener: (context, state) {
           if (state is ScanImageSuccess) {
-            Navigator.pushNamed(context, '/review');
+            Navigator.pushNamed(context, '/review', arguments: state.image);
           }
         },
         builder: (BuildContext context, ScanState state) {

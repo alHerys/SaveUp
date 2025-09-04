@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
+import 'package:save_up/core/themes/loader.dart';
+import 'package:save_up/features/scan/presentation/cubit_scan/scan_cubit.dart';
 
 class ReviewPage extends StatefulWidget {
-  const ReviewPage({super.key});
+  final File imageFile;
+  const ReviewPage({super.key, required this.imageFile});
 
   @override
   State<ReviewPage> createState() => _ReviewPageState();
@@ -11,49 +17,136 @@ class ReviewPage extends StatefulWidget {
 
 class _ReviewPageState extends State<ReviewPage> {
   @override
+  void initState() {
+    super.initState();
+    context.read<ScanCubit>().processImageInGemini(widget.imageFile);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Icon(Icons.arrow_back_ios),
-        ),
-        title: Text(
-          'Review Transaksi',
-          style: TextStyle(
-            color: AppPallete.baseBlack,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-          child: Column(
-            spacing: 16,
-            children: List.generate(20, (index) {
-              return Row(
-                spacing: 10,
+    return BlocConsumer<ScanCubit, ScanState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is GeminiProcessingImageLoading) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              title: Text(
+                'Scan Struk',
+                style: TextStyle(
+                  color: AppPallete.baseWhite,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              centerTitle: true,
+              leading: Icon(Icons.close, color: AppPallete.baseWhite),
+            ),
+            body: Center(
+              child: Stack(
                 children: [
-                  Expanded(
-                    child: TransaksiWidget(
-                      categoryIcon: 'assets/icons/Edit.svg',
-                      nama: 'Indomie Goreng',
-                      kategori: 'Makanan & Minuman',
-                      nominal: '36.000',
+                  Image.file(
+                    widget.imageFile,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                  Positioned.fill(
+                    child: Container(color: Colors.black.withOpacity(0.5)),
+                  ),
+                  Text(
+                    'Scan atau upload struk belanja',
+                    style: TextStyle(
+                      color: AppPallete.baseWhite,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
+                  Loader(
+                    message: 'Mengubah screenshot mu menjadi catatan otomatis',
+                  ),
                 ],
-              );
-            }),
+              ),
+            ),
+          );
+        }
+        if (state is ScanEventFailure) {
+            return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              title: Text(
+              'Scan Struk',
+              style: TextStyle(
+                color: AppPallete.baseWhite,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+              ),
+              centerTitle: true,
+              leading: Icon(Icons.close, color: AppPallete.baseWhite),
+            ),
+            body: Center(
+              child: Text(
+              state.message,
+              style: TextStyle(
+                color: AppPallete.baseBlack,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+              ),
+            ),
+            );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Icon(Icons.arrow_back_ios),
+            ),
+            title: Text(
+              'Review Transaksi',
+              style: TextStyle(
+                color: AppPallete.baseBlack,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: ReviewSafeButton(onTap: () {
-        Navigator.pushNamed(context, '/transaksi-terkini');
-      }),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 20.0,
+                horizontal: 30.0,
+              ),
+              child: Column(
+                spacing: 16,
+                children: List.generate(20, (index) {
+                  return Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: TransaksiWidget(
+                          categoryIcon: 'assets/icons/Edit.svg',
+                          nama: 'Indomie Goreng',
+                          kategori: 'Makanan & Minuman',
+                          nominal: '36.000',
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ),
+          ),
+          bottomNavigationBar: ReviewSafeButton(
+            onTap: () {
+              Navigator.pushNamed(context, '/transaksi-terkini');
+            },
+          ),
+        );
+      },
     );
   }
 }

@@ -18,3 +18,11 @@ final class ScanImageSuccess extends ScanState {
 
   ScanImageSuccess(this.image);
 }
+
+final class GeminiProcessingImageLoading extends ScanState {}
+
+final class GeminiProcessingImageSuccess extends ScanState {
+  final List<Transaksi> daftarTransaksi;
+
+  GeminiProcessingImageSuccess(this.daftarTransaksi);
+}
