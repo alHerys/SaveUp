@@ -53,7 +53,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     height: double.infinity,
                   ),
                   Positioned.fill(
-                    child: Container(color: Colors.black.withOpacity(0.5)),
+                    child: Container(color: Colors.black.withOpacity(0.8)),
                   ),
                   Text(
                     'Scan atau upload struk belanja',
