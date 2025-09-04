@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:save_up/features/scan/domain/entities/transaksi.dart';
+import 'package:save_up/features/scan/entities/transaksi.dart';
 
 part 'scan_state.dart';
 
@@ -21,14 +23,13 @@ class ScanCubit extends Cubit<ScanState> {
       final imageFile = File(pickedFile.path);
       emit(ScanImageSuccess(imageFile));
     } else {
-      emit(ScanEventFailure('Image is Null'));
+      emit(ScanEventFailure());
       emit(ScanInitial());
     }
   }
 
   Future<void> processImageInGemini(File imageFile) async {
     emit(GeminiProcessingImageLoading());
-    Future.delayed(Duration(seconds: 3));
     try {
       // Salin dan tempel kode ini untuk menggantikan jsonSchema yang lama
 
@@ -52,7 +53,7 @@ class ScanCubit extends Cubit<ScanState> {
                 ),
                 'date': Schema.string(
                   description:
-                      'Tanggal transaksi. WAJIB dalam format YYYY-MM-DD agar dapat di-parse. Contoh: 2025-09-04.',
+                      'Tanggal transaksi. WAJIB dalam format DateTime flutter agar dapat di-parse.',
                 ),
                 'category': Schema.enumString(
                   description:
@@ -110,12 +111,26 @@ class ScanCubit extends Cubit<ScanState> {
       final response = await model.generateContent([
         Content.multi([prompt, imagePart]),
       ]);
+
+      final jsonResponse = jsonDecode(response.text!);
+      final List<dynamic> transactionsJson = jsonResponse['transactions'];
+      final List<Transaksi> transactions = transactionsJson
+          .map((json) => Transaksi.fromJson(json))
+          .toList();
+
+      // final box = Hive.box<Transaksi>('transaksiBox');
+      // for (var transaksi in transactions) {
+      //   await box.put(transaksi.id, transaksi);
+      // }
+
+      emit(GeminiProcessingImageSuccess(transactions));
+
       print(response.text);
       emit(ScanInitial());
     } catch (e) {
-      emit(ScanEventFailure(e.toString()));
       print(e);
-      // emit(ScanInitial());
+      emit(ScanEventFailure());
     }
   }
+
 }

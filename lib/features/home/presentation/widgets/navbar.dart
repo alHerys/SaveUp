@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/home/presentation/cubit/home_cubit.dart';
+import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
 
 class Navbar extends StatefulWidget {
   final int tabIndex;
@@ -59,7 +59,7 @@ class _NavbarState extends State<Navbar> with TickerProviderStateMixin {
     if (widget.tabIndex != index) {
       _animationController.reset();
       _animationController.forward();
-      context.read<HomeCubit>().changeTab(index);
+      context.read<NavbarCubit>().changeTab(index);
     }
   }
 

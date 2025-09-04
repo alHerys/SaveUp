@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/core/themes/loader.dart';
-import 'package:save_up/features/scan/presentation/cubit_scan/scan_cubit.dart';
+import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/widgets/scan_bottom_button.dart';
 
 class ScanPage extends StatelessWidget {

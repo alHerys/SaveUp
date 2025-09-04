@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/core/themes/loader.dart';
-import 'package:save_up/features/scan/presentation/cubit_scan/scan_cubit.dart';
+import 'package:save_up/core/utils/currency_format.dart';
+import 'package:save_up/features/scan/presentation/cubit/review/review_cubit.dart';
+import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
 
 class ReviewPage extends StatefulWidget {
   final File imageFile;
@@ -25,7 +27,11 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ScanCubit, ScanState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is GeminiProcessingImageSuccess) {
+          context.read<ReviewCubit>().loadReviewTransactions(state.daftarTransaksi);
+        }
+      },
       builder: (context, state) {
         if (state is GeminiProcessingImageLoading) {
           return Scaffold(
@@ -93,7 +99,7 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
             body: Center(
               child: Text(
-                state.message,
+                'Error Occurred',
                 style: TextStyle(
                   color: AppPallete.baseBlack,
                   fontSize: 12,
@@ -104,58 +110,76 @@ class _ReviewPageState extends State<ReviewPage> {
           );
         }
 
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Icon(Icons.arrow_back_ios),
-              ),
-            ),
-            title: Text(
-              'Review Transaksi',
-              style: TextStyle(
-                color: AppPallete.baseBlack,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 20.0,
-                horizontal: 30.0,
-              ),
-              child: Column(
-                spacing: 16,
-                children: List.generate(20, (index) {
-                  return Row(
-                    spacing: 10,
-                    children: [
-                      Expanded(
-                        child: TransaksiWidget(
-                          categoryIcon: 'assets/icons/Edit.svg',
-                          nama: 'Indomie Goreng',
-                          kategori: 'Makanan & Minuman',
-                          nominal: '36.000',
-                        ),
+        return BlocConsumer<ReviewCubit, ReviewState>(
+          listener: (context, state) {
+            if (state is ReviewSaveSuccess) {
+              Navigator.pushNamedAndRemoveUntil(context, '/transaksi-terkini', (route) => false);
+            }
+          },
+          builder: (context, state) {
+            if (state is ReviewLoaded) {
+              return Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  leading: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Icon(Icons.arrow_back_ios),
                       ),
-                    ],
-                  );
-                }),
-              ),
-            ),
-          ),
-          bottomNavigationBar: ReviewSafeButton(
-            onTap: () {
-              Navigator.pushNamed(context, '/transaksi-terkini');
-            },
-          ),
+                    ),
+                  ),
+                  title: Text(
+                    'Review Transaksi',
+                    style: TextStyle(
+                      color: AppPallete.baseBlack,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 30.0,
+                    ),
+                    child: Column(
+                      spacing: 16,
+                      children: List.generate(state.transactions.length, (
+                        index,
+                      ) {
+                        return Row(
+                          spacing: 10,
+                          children: [
+                            Expanded(
+                              child: TransaksiWidget(
+                                name: state.transactions[index].name,
+                                category: state.transactions[index].category,
+                                amount: state.transactions[index].amount,
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+                bottomNavigationBar: ReviewSafeButton(
+                  onTap: () {
+                    context.read<ReviewCubit>().saveTransaction(state.transactions);
+                    Navigator.pushNamed(context, '/transaksi-terkini');
+                  },
+                ),
+              );
+            } return Container();
+          }
         );
       },
     );
@@ -198,16 +222,14 @@ class ReviewSafeButton extends StatelessWidget {
 }
 
 class TransaksiWidget extends StatelessWidget {
-  final String categoryIcon;
-  final String nama;
-  final String kategori;
-  final String nominal;
+  final String name;
+  final String category;
+  final double amount;
   const TransaksiWidget({
     super.key,
-    required this.categoryIcon,
-    required this.nama,
-    required this.kategori,
-    required this.nominal,
+    required this.name,
+    required this.category,
+    required this.amount,
   });
 
   @override
@@ -232,7 +254,7 @@ class TransaksiWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nama,
+                    name,
                     style: TextStyle(
                       color: AppPallete.baseBlack,
                       fontSize: 12,
@@ -241,7 +263,7 @@ class TransaksiWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    kategori,
+                    category,
                     style: TextStyle(
                       color: AppPallete.baseBlack,
                       fontSize: 12,
@@ -254,7 +276,7 @@ class TransaksiWidget extends StatelessWidget {
             ],
           ),
           Text(
-            '- Rp$nominal',
+            CurrencyFormat.convertToIdr(amount, 0),
             style: TextStyle(
               color: const Color(0xFFFF0000),
               fontSize: 12,

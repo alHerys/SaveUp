@@ -1,27 +1,29 @@
 import 'dart:io';
 
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
-import 'package:save_up/features/home/presentation/cubit/home_cubit.dart';
+import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
 import 'package:save_up/features/home/presentation/pages/transaksi_terkini_page.dart';
 import 'package:save_up/features/home/presentation/widgets/navbar.dart';
 import 'package:save_up/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:save_up/features/scan/presentation/cubit_review/review_cubit.dart';
-import 'package:save_up/features/scan/presentation/cubit_scan/scan_cubit.dart';
+import 'package:save_up/features/scan/presentation/cubit/review/review_cubit.dart';
+import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/pages/review_page.dart';
 import 'package:save_up/features/scan/presentation/pages/scan_page.dart';
 import 'package:save_up/firebase_options.dart';
+import 'package:save_up/features/scan/entities/transaksi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  await Hive.initFlutter();
+  Hive.registerAdapter(TransaksiAdapter());
+  await Hive.openBox<Transaksi>('transaksiBox');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => HomeCubit()),
+        BlocProvider(create: (context) => NavbarCubit()),
         BlocProvider(create: (context) => ScanCubit()),
         BlocProvider(create: (context) => ReviewCubit()),
       ],
@@ -66,7 +68,7 @@ class MyApp extends StatelessWidget {
               },
             );
           }
-          return null; // Penting untuk rute lainnya
+          return null;
         },
       ),
     );
@@ -89,7 +91,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeCubitState>(
+    return BlocBuilder<NavbarCubit, NavbarCubitState>(
       builder: (context, state) {
         return Scaffold(
           extendBody: true,
@@ -110,7 +112,7 @@ class _MainPageState extends State<MainPage> {
                   leading: IconButton(
                     icon: Icon(Icons.close, color: AppPallete.baseWhite),
                     onPressed: () {
-                      context.read<HomeCubit>().changeTab(0);
+                      context.read<NavbarCubit>().changeTab(0);
                     },
                   ),
                 ),

@@ -5,11 +5,7 @@ sealed class ScanState {}
 
 final class ScanInitial extends ScanState {}
 
-final class ScanEventFailure extends ScanState {
-  final String message;
-
-  ScanEventFailure(this.message);
-}
+final class ScanEventFailure extends ScanState {}
 
 final class ScanImageLoading extends ScanState {}
 
