@@ -27,43 +27,60 @@ class ScanCubit extends Cubit<ScanState> {
   }
 
   Future<void> processImageInGemini(File imageFile) async {
-    // Implement the logic to process the image using Gemini API
-    // final apiKey = dotenv.env['GEMINI_API_KEY'];
-    // final model = GenerativeModel(
-    //   model: 'gemini-2.0-flash-lite',
-    //   apiKey: apiKey!,
-    // );
-    // final content = [
-    //   Content.text('Can you give answer in JSON format? Show me!'),
-    // ];
-
-    // final (firstImage, secondImage) = await (
-    //   File('image0.jpg').readAsBytes(),
-    //   File('image1.jpg').readAsBytes(),
-    // ).wait;
-
-    // // final response = await model.generateContent(content);
-    // final prompt = TextPart("What's different between these pictures?");
-    // final imageParts = [
-    //   DataPart('image/jpeg', firstImage),
-    //   DataPart('image/jpeg', secondImage),
-    // ];
-    // final response = await model.generateContent([
-    //   Content.multi([prompt, ...imageParts]),
-    // ]);
-    // print(response.text);
-
-    // Initialize the Gemini Developer API backend service
-    // Create a `GenerativeModel` instance with a model that supports your use case
     emit(GeminiProcessingImageLoading());
     Future.delayed(Duration(seconds: 3));
     try {
+      // Salin dan tempel kode ini untuk menggantikan jsonSchema yang lama
+
+      final jsonSchema = Schema.object(
+        properties: {
+          'transactions': Schema.array(
+            description:
+                'Sebuah array yang berisi daftar semua objek transaksi yang ditemukan di struk. Kembalikan array kosong jika tidak ada transaksi yang ditemukan atau jika gambar bukan struk.',
+            items: Schema.object(
+              properties: {
+                'id': Schema.string(
+                  description:
+                      'ID unik yang terdiri dari 12 karakter alfanumerik untuk setiap transaksi.',
+                ),
+                'name': Schema.string(
+                  description: 'Nama barang atau jasa dari transaksi.',
+                ),
+                'amount': Schema.number(
+                  description:
+                      'Jumlah nominal transaksi dalam bentuk angka (tanpa simbol mata uang atau pemisah ribuan).',
+                ),
+                'date': Schema.string(
+                  description:
+                      'Tanggal transaksi. WAJIB dalam format YYYY-MM-DD agar dapat di-parse. Contoh: 2025-09-04.',
+                ),
+                'category': Schema.enumString(
+                  description:
+                      'Kategori transaksi sesuai dengan instruksi yang diberikan.',
+                  enumValues: [
+                    'Makanan & Minuman',
+                    'Investasi',
+                    'Laundry',
+                    'Belanja',
+                    'Uang Masuk',
+                  ],
+                ),
+              },
+            ),
+          ),
+        },
+      );
+
       final model = FirebaseAI.googleAI().generativeModel(
         model: 'gemini-2.5-flash',
+        generationConfig: GenerationConfig(
+          responseMimeType: 'application/json',
+          responseSchema: jsonSchema,
+        ),
       );
       final prompt = TextPart("""
   Perhatikanlah gambar tersebut dengan saksama. 
-  Jika gambar bukanlah struk transaksi, maka berikan respons kosong (null)
+  Jika gambar bukanlah struk transaksi, maka berikan respons kosong
   
   Jika gambar adalah struk transaksi, maka analisalah daftar transaksi pada gambar tersebut untuk mendapatkan beberapa data berikut:
   1. Nama Barang Transaksi
@@ -81,6 +98,8 @@ class ScanCubit extends Cubit<ScanState> {
   
   Biasanya akan terdapat banyak transaksi dalam gambar, oleh karena itu perhatikanlah dengan baik agar anda dapat memperoleh seluruh list transaksi yang terjadi pada gambar.
   
+  Tambahkan Properti ID yang benar-benar unik berjumlah 12 karakter untuk setiap transaksi.
+
   Berikan output dalam format json
   """);
 

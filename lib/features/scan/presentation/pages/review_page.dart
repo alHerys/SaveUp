@@ -29,6 +29,7 @@ class _ReviewPageState extends State<ReviewPage> {
       builder: (context, state) {
         if (state is GeminiProcessingImageLoading) {
           return Scaffold(
+            extendBodyBehindAppBar: true,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               title: Text(
@@ -57,7 +58,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   Text(
                     'Scan atau upload struk belanja',
                     style: TextStyle(
-                      color: AppPallete.baseWhite,
+                      color: AppPallete.baseBlack,
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
@@ -71,39 +72,49 @@ class _ReviewPageState extends State<ReviewPage> {
           );
         }
         if (state is ScanEventFailure) {
-            return Scaffold(
+          return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               title: Text(
-              'Scan Struk',
-              style: TextStyle(
-                color: AppPallete.baseWhite,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
+                'Scan Struk',
+                style: TextStyle(
+                  color: AppPallete.baseWhite,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               centerTitle: true,
-              leading: Icon(Icons.close, color: AppPallete.baseWhite),
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(Icons.close, color: AppPallete.baseWhite),
+              ),
             ),
             body: Center(
               child: Text(
-              state.message,
-              style: TextStyle(
-                color: AppPallete.baseBlack,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+                state.message,
+                style: TextStyle(
+                  color: AppPallete.baseBlack,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-            );
+          );
         }
 
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Icon(Icons.arrow_back_ios),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Icon(Icons.arrow_back_ios),
+              ),
             ),
             title: Text(
               'Review Transaksi',
