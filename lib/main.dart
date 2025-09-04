@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:save_up/core/secrets/const.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
 import 'package:save_up/features/home/presentation/bloc/home_bloc.dart';
 import 'package:save_up/features/home/presentation/cubit/home_cubit.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
+import 'package:save_up/features/home/presentation/pages/transaksi_terkini_page.dart';
 import 'package:save_up/features/home/presentation/widgets/navbar.dart';
 import 'package:save_up/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:save_up/features/scan/presentation/bloc_review/review_bloc.dart';
+import 'package:save_up/features/scan/presentation/bloc_scan/scan_bloc.dart';
+import 'package:save_up/features/scan/presentation/pages/review_page.dart';
 import 'package:save_up/features/scan/presentation/pages/scan_page.dart';
 
 void main() async {
@@ -28,8 +35,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => HomeBloc()),
+        // BlocProvider(create: (context) => HomeBloc()),
         BlocProvider(create: (context) => HomeCubit()),
+        BlocProvider(create: (context) => ScanBloc()),
+        BlocProvider(create: (context) => ReviewBloc()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -43,12 +52,14 @@ class MyApp extends StatelessWidget {
             Theme.of(context).textTheme,
           ),
         ),
-        initialRoute: '/',
+        initialRoute: '/review',
         routes: {
           '/': (context) => const OnboardingPage(),
           '/asisten': (context) => const MainPage(),
           '/scan': (context) => const ScanPage(),
           '/home': (context) => const MainPage(),
+          '/review': (context) => const ReviewPage(),
+          '/transaksi-terkini': (context) => const TransaksiTerkiniPage(),
         },
       ),
     );
@@ -75,7 +86,6 @@ class _MainPageState extends State<MainPage> {
       builder: (context, state) {
         return Scaffold(
           extendBody: true,
-          // extendBodyBehindAppBar: true,
           backgroundColor: state.tabIndex != 1 ? null : AppPallete.baseBlack,
           appBar: state.tabIndex != 1
               ? null
