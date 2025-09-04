@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "75687481949",
+    "project_id": "saveup-7670d",
+    "storage_bucket": "saveup-7670d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75687481949:android:c096d7d82a6f7d7293b3b4",
+        "android_client_info": {
+          "package_name": "com.example.save_up"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHWRqUzMfnrfvRQTJWS9vJHjyrSrG9-G4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

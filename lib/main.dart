@@ -1,31 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:save_up/core/secrets/const.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
-import 'package:save_up/features/home/presentation/bloc/home_bloc.dart';
 import 'package:save_up/features/home/presentation/cubit/home_cubit.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
 import 'package:save_up/features/home/presentation/pages/transaksi_terkini_page.dart';
 import 'package:save_up/features/home/presentation/widgets/navbar.dart';
 import 'package:save_up/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:save_up/features/scan/presentation/bloc_review/review_bloc.dart';
-import 'package:save_up/features/scan/presentation/bloc_scan/scan_bloc.dart';
+import 'package:save_up/features/scan/presentation/cubit_review/review_cubit.dart';
+import 'package:save_up/features/scan/presentation/cubit_scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/pages/review_page.dart';
 import 'package:save_up/features/scan/presentation/pages/scan_page.dart';
+import 'package:save_up/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await dotenv.load(fileName: ".env");
-  // final apiKey = dotenv.env['GEMINI_API_KEY'];
-  // final apiKey = Const.apiKey;
-  // final model = GenerativeModel(model: 'gemini-2.0-flash-lite', apiKey: apiKey!);
-  // final content = [Content.text('Can you give answer in JSON format? Show me!')];
-  // final response = await model.generateContent(content);
-  // print(response.text);
+  await dotenv.load(fileName: ".env");
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -35,10 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // BlocProvider(create: (context) => HomeBloc()),
         BlocProvider(create: (context) => HomeCubit()),
-        BlocProvider(create: (context) => ScanBloc()),
-        BlocProvider(create: (context) => ReviewBloc()),
+        BlocProvider(create: (context) => ScanCubit()),
+        BlocProvider(create: (context) => ReviewCubit()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -52,7 +45,7 @@ class MyApp extends StatelessWidget {
             Theme.of(context).textTheme,
           ),
         ),
-        initialRoute: '/review',
+        initialRoute: '/',
         routes: {
           '/': (context) => const OnboardingPage(),
           '/asisten': (context) => const MainPage(),

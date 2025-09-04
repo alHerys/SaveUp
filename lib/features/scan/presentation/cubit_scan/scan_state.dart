@@ -1,4 +1,4 @@
-part of 'scan_bloc.dart';
+part of 'scan_cubit.dart';
 
 @immutable
 sealed class ScanState {}
@@ -17,16 +17,4 @@ final class ScanImageSuccess extends ScanState {
   final File image;
 
   ScanImageSuccess(this.image);
-}
-
-final class ReviewCheckboxState extends ScanState {
-  final List<bool> checkboxValues;
-
-  ReviewCheckboxState({required this.checkboxValues});
-
-  ReviewCheckboxState copyWith({List<bool>? checkboxValues}) {
-    return ReviewCheckboxState(
-      checkboxValues: checkboxValues ?? this.checkboxValues,
-    );
-  }
 }

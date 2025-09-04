@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/core/themes/loader.dart';
-import 'package:save_up/features/scan/presentation/bloc_scan/scan_bloc.dart';
+import 'package:save_up/features/scan/presentation/cubit_scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/widgets/scan_bottom_button.dart';
 
 class ScanPage extends StatelessWidget {
@@ -12,9 +13,11 @@ class ScanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: BlocConsumer<ScanBloc, ScanState>(
+      child: BlocConsumer<ScanCubit, ScanState>(
         listener: (context, state) {
-          if (state is ScanImageSuccess) {}
+          if (state is ScanImageSuccess) {
+            Navigator.pushNamed(context, '/review');
+          }
         },
         builder: (BuildContext context, ScanState state) {
           return Stack(
@@ -32,7 +35,20 @@ class ScanPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  state is ScanImageLoading ? SizedBox() : ScanBottomButton(),
+                  state is ScanImageLoading
+                      ? SizedBox()
+                      : ScanBottomButton(
+                          onTapScan: () {
+                            context.read<ScanCubit>().requestImage(
+                              ImageSource.camera,
+                            );
+                          },
+                          onTapUpload: () {
+                            context.read<ScanCubit>().requestImage(
+                              ImageSource.gallery,
+                            );
+                          },
+                        ),
                 ],
               ),
               state is ScanImageLoading ? Loader() : SizedBox(),

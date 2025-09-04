@@ -1,4 +1,4 @@
-part of 'review_bloc.dart';
+part of 'review_cubit.dart';
 
 @immutable
 sealed class ReviewState {}
@@ -15,6 +15,4 @@ final class ReviewFailure extends ReviewState {
 
 final class ReviewInProgress extends ReviewState {}
 
-final class ReviewSuccess extends ReviewState {
-
-}
+final class ReviewSuccess extends ReviewState {}

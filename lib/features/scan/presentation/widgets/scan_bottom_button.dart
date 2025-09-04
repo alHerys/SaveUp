@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/scan/presentation/bloc_scan/scan_bloc.dart';
 
 class ScanBottomButton extends StatelessWidget {
-  const ScanBottomButton({super.key});
+  final VoidCallback onTapScan;
+  final VoidCallback onTapUpload;
+  const ScanBottomButton({
+    super.key,
+    required this.onTapScan,
+    required this.onTapUpload,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +29,7 @@ class ScanBottomButton extends StatelessWidget {
             child: Divider(thickness: 5, color: const Color(0xFF98ADC7)),
           ),
           GestureDetector(
-            onTap: () {
-              context.read<ScanBloc>().add(RequestImage(ImageSource.camera));
-            },
+            onTap: onTapScan,
             child: Container(
               margin: const EdgeInsets.only(top: 30),
               width: double.infinity,
@@ -50,9 +51,7 @@ class ScanBottomButton extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {
-              context.read<ScanBloc>().add(RequestImage(ImageSource.gallery));
-            },
+            onTap: onTapUpload,
             child: Container(
               margin: const EdgeInsets.only(top: 11),
               width: double.infinity,
