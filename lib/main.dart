@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,8 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
-import 'package:save_up/features/asisten/presentation/pages/chat_page.dart';
+import 'package:save_up/features/chat/presentation/cubit/chat_cubit.dart';
+import 'package:save_up/features/chat/presentation/pages/asisten_page.dart';
+import 'package:save_up/features/chat/presentation/pages/chat_page.dart';
 import 'package:save_up/features/home/presentation/cubit/add_transaction/add_transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/transaction/transaction_cubit.dart';
@@ -41,7 +41,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Setup Hive Box
-  await Hive.openBox<Transaksi>('transaksiBox1');
+  await Hive.openBox<Transaksi>('transaksiBox2');
 
   // GetIt Dependency Injection
   dependencyinject.start();
@@ -69,6 +69,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               dependencyinject.serviceLocator<AddTransactionCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => dependencyinject.serviceLocator<ChatCubit>(),
         ),
       ],
       child: MaterialApp(
@@ -122,7 +125,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   @override
   void initState() {
     context.read<TransactionCubit>().loadTransactionFromHive();

@@ -17,7 +17,7 @@ class AsistenPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 24.0,
-              vertical: 48,
+              vertical: 30,
             ),
             child: Center(
               child: Column(

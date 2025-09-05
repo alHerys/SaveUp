@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:save_up/features/chat/domain/usecases/retrive_chat_response.dart';
 import 'package:save_up/features/home/data/repositories/transaction_repository_impl.dart';
 import 'package:save_up/features/home/domain/usecases/add_transaction.dart';
 import 'package:save_up/features/home/domain/usecases/get_grouped_transactions.dart';
@@ -10,6 +11,9 @@ import 'package:save_up/features/scan/domain/usecases/process_image_usecase.dart
 import 'package:save_up/features/scan/domain/usecases/save_transactions_usecase.dart';
 import 'package:save_up/features/scan/presentation/cubit/review/review_cubit.dart';
 import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
+import 'features/chat/data/repository/chat_repository_impl.dart';
+import 'features/chat/domain/repository/chat_repository.dart';
+import 'features/chat/presentation/cubit/chat_cubit.dart';
 import 'features/home/domain/repositories/transaction_repository.dart';
 import 'features/scan/data/repositories/scan_repository_impl.dart';
 import 'features/scan/domain/entities/transaksi.dart';
@@ -20,7 +24,7 @@ final serviceLocator = GetIt.instance;
 void start() {
   // Hive Box
   serviceLocator.registerSingleton<Box<Transaksi>>(
-    Hive.box<Transaksi>('transaksiBox1'),
+    Hive.box<Transaksi>('transaksiBox2'),
   );
 
   // Repository
@@ -46,6 +50,23 @@ void start() {
   );
   serviceLocator.registerLazySingleton(
     () => AddTransaction(repository: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(),
+  );
+
+  // Use Cases
+  serviceLocator.registerLazySingleton(
+    () => RetriveChatResponse(repository: serviceLocator()),
+  );
+
+  // Cubit
+  serviceLocator.registerFactory(
+    () => ChatCubit(
+      getChatResponse: serviceLocator(),
+      addTransactionCubit: serviceLocator(),
+    ),
   );
 
   // Cubit

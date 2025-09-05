@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/core/utils/currency_format.dart';
 import 'package:save_up/features/home/presentation/cubit/transaction/transaction_cubit.dart';
+import 'package:save_up/main.dart';
 
 const List<String> months = [
   'Jan',
@@ -43,11 +44,14 @@ class _TransaksiTerkiniPageState extends State<TransaksiTerkiniPage> {
         centerTitle: true,
         leading: GestureDetector(
           onTap: () {
-            // Kembali ke halaman home
-            Navigator.pushNamedAndRemoveUntil(
+            Navigator.push(
               context,
-              '/home',
-              (route) => false,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    MainPage(),
+                transitionDuration:
+                    Duration.zero,
+              ),
             );
           },
           child: const Padding(
