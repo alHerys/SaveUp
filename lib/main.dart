@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
 import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
@@ -25,6 +26,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TransaksiAdapter());
   await Hive.openBox<Transaksi>('transaksiBox');
+  await initializeDateFormatting('id_ID', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => NavbarCubit()),
         BlocProvider(create: (context) => ScanCubit()),
         BlocProvider(create: (context) => ReviewCubit()),
-        BlocProvider(create: (context) => TransactionCubit())
+        BlocProvider(create: (context) => TransactionCubit()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -91,7 +93,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   @override
   void initState() {
     context.read<TransactionCubit>().loadTransactionFromHive();

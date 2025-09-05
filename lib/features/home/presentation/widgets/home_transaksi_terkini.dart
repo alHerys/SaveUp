@@ -25,13 +25,18 @@ class HomeTransaksiTerkini extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            Text(
-              'Detail',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppPallete.primary,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/transaksi-terkini');
+              },
+              child: Text(
+                'Detail',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppPallete.primary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -58,7 +63,6 @@ class HomeTransaksiTerkini extends StatelessWidget {
 
             if (state is TransactionRetrived) {
               return Container(
-                width: double.infinity,
                 padding: EdgeInsets.all(16),
                 decoration: ShapeDecoration(
                   color: Colors.white,
@@ -76,29 +80,44 @@ class HomeTransaksiTerkini extends StatelessWidget {
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
+                  padding: EdgeInsets.zero,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: state.transactions.length > 4
                       ? 4
                       : state.transactions.length,
                   itemBuilder: (context, index) {
                     final transaction = state.transactions[index];
-                    final formattedDate = DateFormat('EEEE, d MMMM yyyy')
-                        .format(
-                          transaction.date,
-                        ); // Assuming date is a DateTime object
+                    final formattedDate = DateFormat(
+                      'd MMMM yyyy',
+                      'id_ID',
+                    ).format(transaction.date);
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               spacing: 16,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset(
-                                  'assets/icons/Food Category.svg',
-                                ),
+                                switch (transaction.category) {
+                                  'Makanan & Minuman' => SvgPicture.asset(
+                                    'assets/icons/Food Category.svg',
+                                  ),
+                                  'Investasi' => SvgPicture.asset(
+                                    'assets/icons/Money Category.svg',
+                                  ),
+                                  'Laundry' => SvgPicture.asset(
+                                    'assets/icons/Laundry Category.svg',
+                                  ),
+                                  'Belanja' => SvgPicture.asset(
+                                    'assets/icons/Shopping Category.svg',
+                                  ),
+                                  _ => SvgPicture.asset(
+                                    'assets/icons/Money Cateogry.svg',
+                                  ),
+                                },
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   spacing: 10,

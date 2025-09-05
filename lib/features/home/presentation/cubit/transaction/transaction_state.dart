@@ -14,3 +14,8 @@ final class TransactionRetrived extends TransactionState {
 
   TransactionRetrived(this.transactions);
 }
+
+final class TransactionGrouped extends TransactionState {
+  final Map<DateTime, List<Transaksi>> groupedTransactions;
+  TransactionGrouped(this.groupedTransactions);
+}
