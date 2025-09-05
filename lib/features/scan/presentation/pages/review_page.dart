@@ -1,13 +1,16 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/core/themes/loader.dart';
-import 'package:save_up/core/utils/currency_format.dart';
 import 'package:save_up/features/scan/presentation/cubit/review/review_cubit.dart';
 import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
+import 'package:save_up/features/scan/presentation/widgets/edit_transaction_widget.dart';
+import 'package:save_up/features/scan/presentation/widgets/gemini_loader_widget.dart';
+import 'package:save_up/features/scan/presentation/widgets/review_failure_widget.dart';
+import 'package:save_up/features/scan/presentation/widgets/review_save_button.dart';
+import 'package:save_up/features/scan/presentation/widgets/transaksi_review_widget.dart';
 
 class ReviewPage extends StatefulWidget {
   final File imageFile;
@@ -24,100 +27,58 @@ class _ReviewPageState extends State<ReviewPage> {
     context.read<ScanCubit>().processImageInGemini(widget.imageFile);
   }
 
+  // Method untuk menampilkan dialog
+  void _showEditPopup(BuildContext context, int index) {
+    // 1. Beritahu cubit untuk masuk ke mode edit
+    context.read<ReviewCubit>().startEditing(index);
+
+    showDialog(
+      context: context,
+      barrierColor: AppPallete.backgroundColor.withOpacity(0.5),
+      // 2. Berikan instance ReviewCubit yang sama ke dalam pop-up
+      builder: (_) => BlocProvider.value(
+        value: context.read<ReviewCubit>(),
+        child: const EditTransactionWidget(),
+      ),
+    ).then((_) {
+      // 3. (Opsional) Batalkan mode edit jika dialog ditutup dengan cara lain
+      final currentState = context.read<ReviewCubit>().state;
+      if (currentState is ReviewEditing) {
+        context.read<ReviewCubit>().cancelEdit();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ScanCubit, ScanState>(
       listener: (context, state) {
         if (state is GeminiProcessingImageSuccess) {
-          context.read<ReviewCubit>().loadReviewTransactions(state.daftarTransaksi);
+          context.read<ReviewCubit>().loadReviewTransactions(
+            state.daftarTransaksi,
+          );
         }
       },
       builder: (context, state) {
         if (state is GeminiProcessingImageLoading) {
-          return Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              title: Text(
-                'Scan Struk',
-                style: TextStyle(
-                  color: AppPallete.baseWhite,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              centerTitle: true,
-              leading: Icon(Icons.close, color: AppPallete.baseWhite),
-            ),
-            body: Center(
-              child: Stack(
-                children: [
-                  Image.file(
-                    widget.imageFile,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
-                  Positioned.fill(
-                    child: Container(color: Colors.black.withOpacity(0.8)),
-                  ),
-                  Text(
-                    'Scan atau upload struk belanja',
-                    style: TextStyle(
-                      color: AppPallete.baseBlack,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Loader(
-                    message: 'Mengubah screenshot mu menjadi catatan otomatis',
-                  ),
-                ],
-              ),
-            ),
-          );
+          return GeminiLoaderWidget(widget: widget);
         }
         if (state is ScanEventFailure) {
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              title: Text(
-                'Scan Struk',
-                style: TextStyle(
-                  color: AppPallete.baseWhite,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              centerTitle: true,
-              leading: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.close, color: AppPallete.baseWhite),
-              ),
-            ),
-            body: Center(
-              child: Text(
-                'Error Occurred',
-                style: TextStyle(
-                  color: AppPallete.baseBlack,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          );
+          return ReviewFailureWidget();
         }
 
         return BlocConsumer<ReviewCubit, ReviewState>(
           listener: (context, state) {
             if (state is ReviewSaveSuccess) {
-              Navigator.pushNamedAndRemoveUntil(context, '/transaksi-terkini', (route) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/transaksi-terkini',
+                (route) => false,
+              );
             }
           },
           builder: (context, state) {
-            if (state is ReviewGetter) {
+            if (state is ReviewRetrived) {
               return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
@@ -159,10 +120,11 @@ class _ReviewPageState extends State<ReviewPage> {
                           spacing: 10,
                           children: [
                             Expanded(
-                              child: TransaksiWidget(
+                              child: TransaksiReviewWidget(
                                 name: state.transactions[index].name,
                                 category: state.transactions[index].category,
                                 amount: state.transactions[index].amount,
+                                onEditTap: () => _showEditPopup(context, index),
                               ),
                             ),
                           ],
@@ -173,118 +135,17 @@ class _ReviewPageState extends State<ReviewPage> {
                 ),
                 bottomNavigationBar: ReviewSaveButton(
                   onTap: () {
-                    context.read<ReviewCubit>().saveTransaction(state.transactions);
+                    context.read<ReviewCubit>().saveTransaction(
+                      state.transactions,
+                    );
                   },
                 ),
               );
-            } return Container();
-          }
+            }
+            return Container();
+          },
         );
       },
-    );
-  }
-}
-
-class ReviewSaveButton extends StatelessWidget {
-  final VoidCallback onTap;
-  const ReviewSaveButton({super.key, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      left: false,
-      right: false,
-      top: false,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 21),
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppPallete.primary,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            'Simpan',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppPallete.baseWhite /* White */,
-              fontSize: 12,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TransaksiWidget extends StatelessWidget {
-  final String name;
-  final String category;
-  final double amount;
-  const TransaksiWidget({
-    super.key,
-    required this.name,
-    required this.category,
-    required this.amount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Color(0xFFD3D3D3)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            spacing: 16,
-            children: [
-              GestureDetector(
-                onTap: () {},
-                child: SvgPicture.asset('assets/icons/Edit.svg'),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      color: AppPallete.baseBlack,
-                      fontSize: 12,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    category,
-                    style: TextStyle(
-                      color: AppPallete.baseBlack,
-                      fontSize: 12,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Text(
-            CurrencyFormat.convertToIdr(amount, 0),
-            style: TextStyle(
-              color: const Color(0xFFFF0000),
-              fontSize: 12,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

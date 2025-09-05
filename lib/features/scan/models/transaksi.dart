@@ -28,4 +28,20 @@ class Transaksi extends HiveObject {
   factory Transaksi.fromJson(Map<String, dynamic> json) => _$TransaksiFromJson(json);
 
   Map<String, dynamic> toJson() => _$TransaksiToJson(this);
+
+  Transaksi copyWith({
+    String? id,
+    String? name,
+    double? amount,
+    DateTime? date,
+    String? category,
+  }) {
+    return Transaksi(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
+      category: category ?? this.category,
+    );
+  }
 }

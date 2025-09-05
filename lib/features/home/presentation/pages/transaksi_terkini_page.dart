@@ -200,38 +200,46 @@ class _TransaksiTerkiniPageState extends State<TransaksiTerkiniPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            switch (transaction.category) {
-                                              'Makanan & Minuman' =>
-                                                SvgPicture.asset(
-                                                  'assets/icons/Food Category.svg',
+                                        Flexible(
+                                          child: Row(
+                                            children: [
+                                              switch (transaction.category) {
+                                                'Makanan & Minuman' =>
+                                                  SvgPicture.asset(
+                                                    'assets/icons/Food Category.svg',
+                                                  ),
+                                                'Investasi' => SvgPicture.asset(
+                                                  'assets/icons/Money Category.svg',
                                                 ),
-                                              'Investasi' => SvgPicture.asset(
-                                                'assets/icons/Money Category.svg',
+                                                'Laundry' => SvgPicture.asset(
+                                                  'assets/icons/Laundry Category.svg',
+                                                ),
+                                                'Belanja' => SvgPicture.asset(
+                                                  'assets/icons/Shopping Category.svg',
+                                                ),
+                                                _ => SvgPicture.asset(
+                                                  'assets/icons/Money Cateogry.svg',
+                                                ),
+                                              },
+                                              const SizedBox(width: 16),
+                                              Flexible(
+                                                child: Text(
+                                                  transaction.name,
+                                                  overflow: TextOverflow.fade,
+                                                  style: const TextStyle(
+                                                    color: AppPallete.baseBlack,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
                                               ),
-                                              'Laundry' => SvgPicture.asset(
-                                                'assets/icons/Laundry Category.svg',
-                                              ),
-                                              'Belanja' => SvgPicture.asset(
-                                                'assets/icons/Shopping Category.svg',
-                                              ),
-                                              _ => SvgPicture.asset(
-                                                'assets/icons/Money Cateogry.svg',
-                                              ),
-                                            },
-                                            const SizedBox(width: 16),
-                                            Text(
-                                              transaction.name,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+
                                         Text(
                                           '- ${CurrencyFormat.convertToIdr(transaction.amount, 0)}',
                                           textAlign: TextAlign.center,
@@ -244,7 +252,7 @@ class _TransaksiTerkiniPageState extends State<TransaksiTerkiniPage> {
                                       ],
                                     ),
                                   );
-                                }).toList(),
+                                }),
                               ],
                             ),
                           );

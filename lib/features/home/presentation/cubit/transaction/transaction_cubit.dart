@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
-import 'package:save_up/features/scan/entities/transaksi.dart';
+import 'package:save_up/features/scan/models/transaksi.dart';
 
 part 'transaction_state.dart';
 
@@ -13,7 +13,10 @@ class TransactionCubit extends Cubit<TransactionState> {
     try {
       emit(TransactionLoading());
       final box = Hive.box<Transaksi>('transaksiBox');
-      final transactions = box.values.toList().cast<Transaksi>();
+
+      final transactions = box.values.toList().cast<Transaksi>()
+        ..sort((a, b) => b.date.compareTo(a.date));
+
       emit(TransactionRetrived(transactions));
     } catch (e) {
       emit(TransactionError());

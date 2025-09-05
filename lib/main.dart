@@ -19,7 +19,7 @@ import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/pages/review_page.dart';
 import 'package:save_up/features/scan/presentation/pages/scan_page.dart';
 import 'package:save_up/firebase_options.dart';
-import 'package:save_up/features/scan/entities/transaksi.dart';
+import 'package:save_up/features/scan/models/transaksi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

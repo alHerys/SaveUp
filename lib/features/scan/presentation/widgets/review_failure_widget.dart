@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/scan/presentation/pages/scan_page/scan_bloc.dart';
 
 class ReviewFailureWidget extends StatelessWidget {
-  final ScanEventFailure state;
-  const ReviewFailureWidget({
-    super.key,
-    required this.state,
-  });
+  const ReviewFailureWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +27,7 @@ class ReviewFailureWidget extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          state.message,
+          'Terjadi Error',
           style: TextStyle(
             color: AppPallete.baseBlack,
             fontSize: 12,
