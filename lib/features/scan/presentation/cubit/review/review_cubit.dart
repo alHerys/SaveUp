@@ -1,12 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
-import 'package:save_up/features/scan/models/transaksi.dart';
+import 'package:save_up/features/scan/domain/entities/transaksi.dart';
+import 'package:save_up/features/scan/domain/usecases/save_transactions_usecase.dart';
 
 part 'review_state.dart';
 
 class ReviewCubit extends Cubit<ReviewState> {
-  ReviewCubit() : super(ReviewInitial());
+  final SaveTransactionsUsecase transactionHiveBox;
+  ReviewCubit({required this.transactionHiveBox}) : super(ReviewInitial());
 
   void loadReviewTransactions(List<Transaksi> transactions) {
     emit(ReviewRetrived(transactions));
@@ -15,10 +17,7 @@ class ReviewCubit extends Cubit<ReviewState> {
   Future<void> saveTransaction(List<Transaksi> transactions) async {
     try {
       emit(ReviewLoading());
-      final Box box = Hive.box<Transaksi>('transaksiBox');
-      for (var element in transactions) {
-        await box.put(element.id, element);
-      }
+      await transactionHiveBox(transactions);
       emit(ReviewSaveSuccess());
     } catch (e) {
       emit(ReviewFailure());

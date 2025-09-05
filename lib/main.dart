@@ -19,15 +19,28 @@ import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/pages/review_page.dart';
 import 'package:save_up/features/scan/presentation/pages/scan_page.dart';
 import 'package:save_up/firebase_options.dart';
-import 'package:save_up/features/scan/models/transaksi.dart';
+import 'package:save_up/features/scan/domain/entities/transaksi.dart';
+import 'package:save_up/get_it_service.dart' as dependencyinject;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(TransaksiAdapter());
-  await Hive.openBox<Transaksi>('transaksiBox');
   await initializeDateFormatting('id_ID', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Hive.openBox<Transaksi>('transaksiBox');
+
+  // // Data Layer
+  // final transactionRepository = TransactionRepositoryImpl(transactionBox);
+  // final scanRepository = ScanRepositoryImpl(transactionBox);
+
+  // // Domain Layer (Use Cases)
+  // final getTransactions = GetTransactions(transactionRepository);
+  // final getGroupedTransactions = GetGroupedTransactions(transactionRepository);
+  // final processImage = ProcessImageUsecase(scanRepository);
+  // final saveTransactions = SaveTransactionsUsecase(scanRepository);
+
+  dependencyinject.setup();
   runApp(const MyApp());
 }
 
@@ -38,9 +51,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => NavbarCubit()),
-        BlocProvider(create: (context) => ScanCubit()),
-        BlocProvider(create: (context) => ReviewCubit()),
-        BlocProvider(create: (context) => TransactionCubit()),
+        BlocProvider(
+          create: (context) => dependencyinject.serviceLocator<ScanCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => dependencyinject.serviceLocator<ReviewCubit>(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              dependencyinject.serviceLocator<TransactionCubit>(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

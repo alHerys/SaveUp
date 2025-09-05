@@ -1,21 +1,23 @@
 import 'package:bloc/bloc.dart';
-import 'package:collection/collection.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
-import 'package:save_up/features/scan/models/transaksi.dart';
+import 'package:save_up/features/home/domain/usecases/get_grouped_transactions.dart';
+import 'package:save_up/features/home/domain/usecases/get_transactions.dart';
+import 'package:save_up/features/scan/domain/entities/transaksi.dart';
 
 part 'transaction_state.dart';
 
 class TransactionCubit extends Cubit<TransactionState> {
-  TransactionCubit() : super(TransactionInitial());
+  final GetTransactions getTransactions;
+  final GetGroupedTransactions getGroupedTransactions;
 
-  void loadTransactionFromHive() {
+  TransactionCubit({required this.getTransactions, required this.getGroupedTransactions})
+    : super(TransactionInitial());
+
+  Future<void> loadTransactionFromHive() async {
     try {
       emit(TransactionLoading());
-      final box = Hive.box<Transaksi>('transaksiBox');
 
-      final transactions = box.values.toList().cast<Transaksi>()
-        ..sort((a, b) => b.date.compareTo(a.date));
+      final transactions = await getTransactions();
 
       emit(TransactionRetrived(transactions));
     } catch (e) {
@@ -23,24 +25,10 @@ class TransactionCubit extends Cubit<TransactionState> {
     }
   }
 
-  void groupLoadTransactionFromHive() {
+  Future<void> groupLoadTransactionFromHive() async {
     try {
       emit(TransactionLoading());
-      final box = Hive.box<Transaksi>('transaksiBox');
-
-      // Ambil dan urutkan transaksi dari yang terbaru
-      final transactions = box.values.toList().cast<Transaksi>()
-        ..sort((a, b) => b.date.compareTo(a.date));
-
-      // Kelompokkan transaksi berdasarkan tanggal (tanpa jam, menit, detik)
-      final groupedData = groupBy<Transaksi, DateTime>(
-        transactions,
-        (transaksi) => DateTime(
-          transaksi.date.year,
-          transaksi.date.month,
-          transaksi.date.day,
-        ),
-      );
+      final groupedData = await getGroupedTransactions();
 
       emit(TransactionGrouped(groupedData));
     } catch (e) {

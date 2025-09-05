@@ -1,16 +1,18 @@
-import 'dart:convert';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:save_up/features/scan/models/transaksi.dart';
+
+import 'package:save_up/features/scan/domain/entities/transaksi.dart';
+import 'package:save_up/features/scan/domain/usecases/process_image_usecase.dart';
 
 part 'scan_state.dart';
 
 class ScanCubit extends Cubit<ScanState> {
-  ScanCubit() : super(ScanInitial());
+  final ProcessImageUsecase processImageUsecase;
+  ScanCubit({required this.processImageUsecase}) : super(ScanInitial());
 
   void requestImage(ImageSource imageSource) async {
     emit(ScanImageLoading());
@@ -30,106 +32,12 @@ class ScanCubit extends Cubit<ScanState> {
   Future<void> processImageInGemini(File imageFile) async {
     emit(GeminiProcessingImageLoading());
     try {
-      // Salin dan tempel kode ini untuk menggantikan jsonSchema yang lama
-
-      final jsonSchema = Schema.object(
-        properties: {
-          'transactions': Schema.array(
-            description:
-                'Sebuah array yang berisi daftar semua objek transaksi yang ditemukan di struk. Kembalikan array kosong jika tidak ada transaksi yang ditemukan atau jika gambar bukan struk.',
-            items: Schema.object(
-              properties: {
-                'id': Schema.string(
-                  description:
-                      'ID unik yang terdiri dari 12 karakter alfanumerik untuk setiap transaksi.',
-                ),
-                'name': Schema.string(
-                  description: 'Nama barang atau jasa dari transaksi.',
-                ),
-                'amount': Schema.number(
-                  description:
-                      'Jumlah nominal transaksi dalam bentuk angka (tanpa simbol mata uang atau pemisah ribuan).',
-                ),
-                'date': Schema.string(
-                  description:
-                      'Tanggal transaksi. WAJIB dalam format DateTime flutter agar dapat di-parse.',
-                ),
-                'category': Schema.enumString(
-                  description:
-                      'Kategori transaksi sesuai dengan instruksi yang diberikan.',
-                  enumValues: [
-                    'Makanan & Minuman',
-                    'Investasi',
-                    'Laundry',
-                    'Belanja',
-                    'Uang Masuk',
-                  ],
-                ),
-              },
-            ),
-          ),
-        },
-      );
-
-      final model = FirebaseAI.googleAI().generativeModel(
-        model: 'gemini-2.5-flash',
-        generationConfig: GenerationConfig(
-          responseMimeType: 'application/json',
-          responseSchema: jsonSchema,
-        ),
-      );
-      final prompt = TextPart("""
-  Perhatikanlah gambar tersebut dengan saksama. 
-  Jika gambar bukanlah struk transaksi, maka berikan respons kosong
-  
-  Jika gambar adalah struk transaksi, maka analisalah daftar transaksi pada gambar tersebut untuk mendapatkan beberapa data berikut:
-  1. Nama Barang Transaksi
-  2. Nominal Transaksi
-  3. Tanggal Transaksi
-  4. Kategori Transaksi
-  
-  Apabila transaksi adalah pengeluaran, maka pilih salah satu berikut sebagai kategori: 
-  a. Makanan & Minuman
-  b. Investasi
-  c. Laundry
-  Jika transaksi tidak termasuk dalam ketiga kategori, maka atur default yaitu belanja
-  
-  Apabila transaksi adalah pemasukan, maka kategorinya adalah uang masuk.
-  
-  Biasanya akan terdapat banyak transaksi dalam gambar, oleh karena itu perhatikanlah dengan baik agar anda dapat memperoleh seluruh list transaksi yang terjadi pada gambar.
-  
-  Tambahkan Properti ID yang benar-benar unik berjumlah 12 karakter untuk setiap transaksi.
-
-  Berikan output dalam format json
-  """);
-
-      final image = await imageFile.readAsBytes();
-      final imagePart = InlineDataPart('image/jpeg', image);
-
-      // To generate text output, call generateContent with the text input
-      final response = await model.generateContent([
-        Content.multi([prompt, imagePart]),
-      ]);
-
-      final jsonResponse = jsonDecode(response.text!);
-      final List<dynamic> transactionsJson = jsonResponse['transactions'];
-      final List<Transaksi> transactions = transactionsJson
-          .map((json) => Transaksi.fromJson(json))
-          .toList();
-
-      // final box = Hive.box<Transaksi>('transaksiBox');
-      // for (var transaksi in transactions) {
-      //   await box.put(transaksi.id, transaksi);
-      // }
-
+      final transactions = await processImageUsecase.call(imageFile);
       emit(GeminiProcessingImageSuccess(transactions));
-
-      print(response.text);
       emit(ScanInitial());
     } catch (e) {
       print(e);
       emit(ScanEventFailure());
     }
   }
-
 }
