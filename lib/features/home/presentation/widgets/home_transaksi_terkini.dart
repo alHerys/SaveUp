@@ -144,10 +144,12 @@ class HomeTransaksiTerkini extends StatelessWidget {
                               ],
                             ),
                             Text(
-                              '- ${CurrencyFormat.convertToIdr(transaction.amount, 0)}',
+                              '${transaction.isPengeluaran ? '-' : '+'} ${CurrencyFormat.convertToIdr(transaction.amount, 0)}',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: AppPallete.semanticRed,
+                                color: transaction.isPengeluaran
+                                    ? AppPallete.semanticRed
+                                    : AppPallete.semanticGreen,
                                 fontSize: 11,
                                 fontFamily: 'Plus Jakarta Sans',
                                 fontWeight: FontWeight.w700,

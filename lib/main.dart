@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,20 +9,21 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
+import 'package:save_up/features/asisten/presentation/pages/chat_page.dart';
 import 'package:save_up/features/home/presentation/cubit/add_transaction/add_transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/transaction/transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
 import 'package:save_up/features/home/presentation/pages/transaksi_terkini_page.dart';
 import 'package:save_up/features/home/presentation/widgets/navbar.dart';
-import 'package:save_up/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:save_up/features/onboarding/pages/onboarding_page.dart';
 import 'package:save_up/features/scan/presentation/cubit/review/review_cubit.dart';
 import 'package:save_up/features/scan/presentation/cubit/scan/scan_cubit.dart';
 import 'package:save_up/features/scan/presentation/pages/review_page.dart';
 import 'package:save_up/features/scan/presentation/pages/scan_page.dart';
 import 'package:save_up/firebase_options.dart';
 import 'package:save_up/features/scan/domain/entities/transaksi.dart';
-import 'package:save_up/get_it_service.dart' as dependencyinject;
+import 'package:save_up/dependency_injector.dart' as dependencyinject;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,12 +41,10 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Setup Hive Box
-  await Hive.openBox<Transaksi>('transaksiBox');
+  await Hive.openBox<Transaksi>('transaksiBox1');
 
-  // Get It Dependency Injection
+  // GetIt Dependency Injection
   dependencyinject.start();
-
-
 
   runApp(const MyApp());
 }
@@ -89,8 +89,8 @@ class MyApp extends StatelessWidget {
           '/asisten': (context) => const MainPage(),
           '/scan': (context) => const ScanPage(),
           '/home': (context) => const MainPage(),
-          // '/review': (context) => const ReviewPage(),
           '/transaksi-terkini': (context) => const TransaksiTerkiniPage(),
+          '/chat': (context) => const ChatPage(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/review') {
@@ -122,7 +122,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  
+
   @override
   void initState() {
     context.read<TransactionCubit>().loadTransactionFromHive();

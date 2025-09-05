@@ -19,29 +19,29 @@ class TransaksiReviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Color(0xFFD3D3D3)),
+        border: Border.all(color: const Color(0xFFD3D3D3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
             child: Row(
-              spacing: 16,
               children: [
                 GestureDetector(
                   onTap: onEditTap,
                   child: SvgPicture.asset('assets/icons/Edit.svg'),
                 ),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppPallete.baseBlack,
                           fontSize: 12,
                           fontFamily: 'Inter',
@@ -50,7 +50,7 @@ class TransaksiReviewWidget extends StatelessWidget {
                       ),
                       Text(
                         category,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppPallete.baseBlack,
                           fontSize: 12,
                           fontFamily: 'Inter',
@@ -65,9 +65,9 @@ class TransaksiReviewWidget extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            CurrencyFormat.convertToIdr(amount, 0),
-            style: TextStyle(
-              color: const Color(0xFFFF0000),
+            '- ${CurrencyFormat.convertToIdr(amount, 0)}',
+            style: const TextStyle(
+              color: AppPallete.semanticRed,
               fontSize: 12,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w600,

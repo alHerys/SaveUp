@@ -40,7 +40,6 @@ dependencies:
   fl_chart: ^0.68.0
   flutter_bloc: ^9.1.1
   image_picker: ^1.2.0
-  flutter_dotenv: ^6.0.0
   meta: ^1.16.0
   bloc: ^9.0.0
   firebase_core: ^4.1.0
@@ -48,10 +47,11 @@ dependencies:
   hive: ^2.2.3
   json_annotation: ^4.9.0
   hive_flutter: ^1.1.0
-  intl: ^0.20.2
+  intl: ^0.19.0
   collection: ^1.19.1
   flutter_launcher_icons: ^0.14.4
   get_it: ^8.2.0
+  dash_chat_2: ^0.0.21
 
 dev_dependencies:
   flutter_test:
@@ -87,7 +87,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

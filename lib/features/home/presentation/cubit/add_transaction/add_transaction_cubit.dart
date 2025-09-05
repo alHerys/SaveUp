@@ -31,6 +31,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     required double amount,
     required String category,
     required DateTime date,
+    required bool isPengeluaran,
   }) async {
     emit(AddTransactionLoading());
     try {
@@ -40,6 +41,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         amount: amount,
         date: date,
         category: category,
+        isPengeluaran: isPengeluaran
       );
       await addTransactionUsecase(newTransaction);
       emit(AddTransactionSuccess());

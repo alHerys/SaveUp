@@ -21,7 +21,7 @@ class AsistenPage extends StatelessWidget {
             ),
             child: Center(
               child: Column(
-                spacing: 88,
+                spacing: 70,
                 children: [
                   Column(
                     spacing: 3,
@@ -54,39 +54,44 @@ class AsistenPage extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Container(
-                    width: 364,
-                    height: 56,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppPallete.primary),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Catat lewat Budgie',
-                          style: TextStyle(
-                            color: AppPallete.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/chat');
+                    },
+                    child: Container(
+                      width: 364,
+                      height: 56,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppPallete.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Catat lewat Budgie',
+                            style: TextStyle(
+                              color: AppPallete.textPrimary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppPallete.primary,
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppPallete.primary,
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/icons/paper-airplane.svg',
+                            ),
                           ),
-                          child: SvgPicture.asset(
-                            'assets/icons/paper-airplane.svg',
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],

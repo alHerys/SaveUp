@@ -102,7 +102,7 @@ class ScanRepositoryImpl implements ScanRepository {
   }
 
   @override
-  Future<void> saveTransactionsList(List<Transaksi> transactions) async{
+  Future<void> saveTransactionsList(List<Transaksi> transactions) async {
     try {
       for (var element in transactions) {
         await transactionsBox.put(element.id, element);

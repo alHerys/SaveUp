@@ -20,7 +20,7 @@ final serviceLocator = GetIt.instance;
 void start() {
   // Hive Box
   serviceLocator.registerSingleton<Box<Transaksi>>(
-    Hive.box<Transaksi>('transaksiBox'),
+    Hive.box<Transaksi>('transaksiBox1'),
   );
 
   // Repository

@@ -22,13 +22,14 @@ class TransaksiAdapter extends TypeAdapter<Transaksi> {
       amount: fields[2] as double,
       date: fields[3] as DateTime,
       category: fields[4] as String,
+      isPengeluaran: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Transaksi obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class TransaksiAdapter extends TypeAdapter<Transaksi> {
       ..writeByte(3)
       ..write(obj.date)
       ..writeByte(4)
-      ..write(obj.category);
+      ..write(obj.category)
+      ..writeByte(5)
+      ..write(obj.isPengeluaran);
   }
 
   @override
@@ -62,6 +65,7 @@ Transaksi _$TransaksiFromJson(Map<String, dynamic> json) => Transaksi(
       amount: (json['amount'] as num).toDouble(),
       date: DateTime.parse(json['date'] as String),
       category: json['category'] as String,
+      isPengeluaran: json['isPengeluaran'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$TransaksiToJson(Transaksi instance) => <String, dynamic>{
@@ -70,4 +74,5 @@ Map<String, dynamic> _$TransaksiToJson(Transaksi instance) => <String, dynamic>{
       'amount': instance.amount,
       'date': instance.date.toIso8601String(),
       'category': instance.category,
+      'isPengeluaran': instance.isPengeluaran,
     };

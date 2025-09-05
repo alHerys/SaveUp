@@ -143,10 +143,18 @@ class _TransaksiTerkiniPageState extends State<TransaksiTerkiniPage> {
                           final date = dates[index];
                           final transactionsOnDate = groupedTransactions[date]!;
                           final totalPengeluaran = transactionsOnDate
+                              .where((t) => t.isPengeluaran)
                               .fold<double>(
                                 0,
                                 (sum, item) => sum + item.amount,
                               );
+                          final totalPemasukan = transactionsOnDate
+                              .where((t) => !t.isPengeluaran)
+                              .fold<double>(
+                                0,
+                                (sum, item) => sum + item.amount,
+                              );
+                          final total = totalPemasukan - totalPengeluaran;
 
                           return Container(
                             padding: const EdgeInsets.all(16),
@@ -181,18 +189,36 @@ class _TransaksiTerkiniPageState extends State<TransaksiTerkiniPage> {
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
-                                    Text(
-                                      '- ${CurrencyFormat.convertToIdr(totalPengeluaran, 0)}',
-                                      style: const TextStyle(
-                                        color: AppPallete.textSecondary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          // '${total >= 0 ? '+' : ''} ${CurrencyFormat.convertToIdr(total.abs(), 0)}',
+                                          switch (total) {
+                                            > 0 =>
+                                              '+ ${CurrencyFormat.convertToIdr(total, 0)}',
+                                            < 0 =>
+                                              '- ${CurrencyFormat.convertToIdr(total.abs(), 0)}',
+                                            double() =>
+                                              CurrencyFormat.convertToIdr(
+                                                total,
+                                                0,
+                                              ),
+                                          },
+                                          style: TextStyle(
+                                            color: switch (total) {
+                                              >0 => AppPallete.semanticGreen,
+                                              <0 => AppPallete.semanticRed,
+                                              double() => AppPallete.baseBlack
+                                            },
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 12),
-                                // Daftar transaksi pada tanggal tersebut
                                 ...transactionsOnDate.map((transaction) {
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
@@ -236,15 +262,15 @@ class _TransaksiTerkiniPageState extends State<TransaksiTerkiniPage> {
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
+                                        const SizedBox(width: 8),
 
                                         Text(
-                                          '- ${CurrencyFormat.convertToIdr(transaction.amount, 0)}',
+                                          '${transaction.isPengeluaran ? '-' : '+'} ${CurrencyFormat.convertToIdr(transaction.amount, 0)}',
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Color(0xFFEA4335),
+                                          style: TextStyle(
+                                            color: transaction.isPengeluaran
+                                                ? AppPallete.semanticRed
+                                                : AppPallete.semanticGreen,
                                             fontSize: 12,
                                             fontWeight: FontWeight.w700,
                                           ),

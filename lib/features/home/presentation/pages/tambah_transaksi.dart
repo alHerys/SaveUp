@@ -22,6 +22,7 @@ class _TambahTransaksiState extends State<TambahTransaksi> {
   final TextEditingController _tanggalController = TextEditingController();
   String _selectedCategory = 'Makanan & Minuman';
   DateTime _selectedDate = DateTime.now();
+  TransactionType _selectedTransactionType = TransactionType.pengeluaran;
 
   String _getMonthName(int month) {
     const monthNames = [
@@ -58,8 +59,6 @@ class _TambahTransaksiState extends State<TambahTransaksi> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = PageController();
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -75,36 +74,56 @@ class _TambahTransaksiState extends State<TambahTransaksi> {
       body: BlocListener<AddTransactionCubit, AddTransactionState>(
         listener: (context, state) {
           if (state is AddTransactionSuccess) {
-            Navigator.pushNamed(context, '/transaksi-terkini');
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            );
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Transaksi berhasil ditambahkan!')),
             );
           } else if (state is AddTransactionFailure) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Maaf coba lagi nanti')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Maaf coba lagi nanti')),
+            );
           }
         },
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: SingleChildScrollView(
             child: Column(
-              spacing: 30,
               children: [
-                FilterButton(onTapPengeluaran: () {}, onTapPemasukan: () {}),
+                FilterButton(
+                  selectedType: _selectedTransactionType,
+                  onTapPengeluaran: () {
+                    setState(() {
+                      _selectedTransactionType = TransactionType.pengeluaran;
+                    });
+                  },
+                  onTapPemasukan: () {
+                    setState(() {
+                      _selectedTransactionType = TransactionType.pemasukan;
+                    });
+                  },
+                ),
+                const SizedBox(height: 30),
                 Column(
-                  spacing: 30,
                   children: [
                     FormNama(controller: _namaController),
+                    const SizedBox(height: 30),
                     FormJumlah(controller: _jumlahController),
-                    FormKategori(
-                      selectedValue: _selectedCategory,
-                      onCategoryChanged: (String value) {
-                        setState(() {
-                          _selectedCategory = value;
-                        });
-                      },
-                    ),
+                    const SizedBox(height: 30),
+                    if (_selectedTransactionType == TransactionType.pengeluaran)
+                      FormKategori(
+                        selectedValue: _selectedCategory,
+                        onCategoryChanged: (String value) {
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                        },
+                      ),
+                    if (_selectedTransactionType == TransactionType.pengeluaran)
+                      const SizedBox(height: 30),
                     FormTanggal(
                       controller: _tanggalController,
                       onTap: () async {
@@ -137,12 +156,17 @@ class _TambahTransaksiState extends State<TambahTransaksi> {
             final amount = double.tryParse(_jumlahController.text);
             if (amount != null &&
                 _namaController.text.isNotEmpty &&
-                _selectedCategory.isNotEmpty) {
+                (_selectedTransactionType == TransactionType.pemasukan ||
+                    _selectedCategory.isNotEmpty)) {
+              final isPengeluaran =
+                  _selectedTransactionType == TransactionType.pengeluaran;
+
               context.read<AddTransactionCubit>().addTransaction(
                 name: _namaController.text,
                 amount: amount,
-                category: _selectedCategory,
+                category: isPengeluaran ? _selectedCategory : 'Uang Masuk',
                 date: _selectedDate,
+                isPengeluaran: isPengeluaran,
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(

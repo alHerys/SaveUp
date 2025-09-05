@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 
-class OnboardingContent extends StatelessWidget {
+class OnboardingWidget extends StatelessWidget {
   final String title;
   final String imagePath;
   final String description;
 
-  const OnboardingContent({
+  const OnboardingWidget({
     super.key,
     required this.title,
     required this.imagePath,

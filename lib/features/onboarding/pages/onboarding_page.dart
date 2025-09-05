@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
-import 'package:save_up/features/onboarding/presentation/widgets/onboarding_content.dart';
+import 'package:save_up/features/onboarding/widgets/onboarding_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -46,21 +46,21 @@ class OnboardingPage extends StatelessWidget {
                 controller: controller,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  OnboardingContent(
+                  OnboardingWidget(
                     title: 'Budget Track',
                     imagePath: 'assets/images/Bar Chart Onboarding.svg',
                     description:
                         'Mulai mencatat semua transaksi keuangan secara otomatis, dan akses laporan keuangan kapan saja.',
                   ),
 
-                  OnboardingContent(
+                  OnboardingWidget(
                     title: 'Scan Struk',
                     imagePath: 'assets/images/Scan Onboarding.svg',
                     description:
                         'Dengan satu kali pemindaian, detail transaksi langsung tercatat di sistem, tanpa perlu input manual.',
                   ),
 
-                  OnboardingContent(
+                  OnboardingWidget(
                     title: 'Assistant Chatbot',
                     imagePath: 'assets/images/Chat Bot Onb.svg',
                     description:

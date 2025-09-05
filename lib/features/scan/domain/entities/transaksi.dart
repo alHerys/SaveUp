@@ -16,6 +16,8 @@ class Transaksi extends HiveObject {
   final DateTime date;
   @HiveField(4)
   final String category;
+  @HiveField(5)
+  bool isPengeluaran;
 
   Transaksi({
     required this.id,
@@ -23,6 +25,7 @@ class Transaksi extends HiveObject {
     required this.amount,
     required this.date,
     required this.category,
+    this.isPengeluaran = true
   });
 
   factory Transaksi.fromJson(Map<String, dynamic> json) => _$TransaksiFromJson(json);
