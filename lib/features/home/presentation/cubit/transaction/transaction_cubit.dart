@@ -7,8 +7,8 @@ import 'package:save_up/features/scan/domain/entities/transaksi.dart';
 part 'transaction_state.dart';
 
 class TransactionCubit extends Cubit<TransactionState> {
-  final GetTransactions getTransactions;
-  final GetGroupedTransactions getGroupedTransactions;
+  final FetchTransactions getTransactions;
+  final FetchGroupedTransactions getGroupedTransactions;
 
   TransactionCubit({required this.getTransactions, required this.getGroupedTransactions})
     : super(TransactionInitial());

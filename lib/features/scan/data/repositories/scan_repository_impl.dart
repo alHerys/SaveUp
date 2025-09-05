@@ -13,7 +13,7 @@ class ScanRepositoryImpl implements ScanRepository {
   ScanRepositoryImpl(this.transactionsBox);
 
   @override
-  Future<List<Transaksi>> processImage(File imageFile) async {
+  Future<List<Transaksi>> geminiProcessImage(File imageFile) async {
     final jsonSchema = Schema.object(
       properties: {
         'transactions': Schema.array(
@@ -102,7 +102,7 @@ class ScanRepositoryImpl implements ScanRepository {
   }
 
   @override
-  Future<void> saveTransactions(List<Transaksi> transactions) async{
+  Future<void> saveTransactionsList(List<Transaksi> transactions) async{
     try {
       for (var element in transactions) {
         await transactionsBox.put(element.id, element);

@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:save_up/features/home/data/repositories/transaction_repository_impl.dart';
+import 'package:save_up/features/home/domain/usecases/add_transaction.dart';
 import 'package:save_up/features/home/domain/usecases/get_grouped_transactions.dart';
 import 'package:save_up/features/home/domain/usecases/get_transactions.dart';
+import 'package:save_up/features/home/presentation/cubit/add_transaction/add_transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/transaction/transaction_cubit.dart';
 import 'package:save_up/features/scan/domain/usecases/process_image_usecase.dart';
 import 'package:save_up/features/scan/domain/usecases/save_transactions_usecase.dart';
@@ -23,27 +25,43 @@ void start() {
 
   // Repository
   serviceLocator.registerLazySingleton<TransactionRepository>(
-    () => TransactionRepositoryImpl(serviceLocator()),
+    () => TransactionRepositoryImpl(hiveBox: serviceLocator()),
   );
   serviceLocator.registerLazySingleton<ScanRepository>(
     () => ScanRepositoryImpl(serviceLocator()),
   );
 
   // Use Cases
-  serviceLocator.registerLazySingleton(() => GetTransactions(serviceLocator()));
   serviceLocator.registerLazySingleton(
-    () => GetGroupedTransactions(serviceLocator()),
+    () => FetchTransactions(serviceLocator()),
   );
   serviceLocator.registerLazySingleton(
-    () => ProcessImageUsecase(serviceLocator()),
+    () => FetchGroupedTransactions(serviceLocator()),
   );
   serviceLocator.registerLazySingleton(
-    () => SaveTransactionsUsecase(serviceLocator()),
+    () => GeminiProcessImage(serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => SaveTransactionsList(repository: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => AddTransaction(repository: serviceLocator()),
   );
 
+  // Cubit
   serviceLocator.registerFactory(
-    () => TransactionCubit(getTransactions: serviceLocator(), getGroupedTransactions: serviceLocator()),
+    () => TransactionCubit(
+      getTransactions: serviceLocator(),
+      getGroupedTransactions: serviceLocator(),
+    ),
   );
-  serviceLocator.registerFactory(() => ScanCubit(processImageUsecase: serviceLocator()));
-  serviceLocator.registerFactory(() => ReviewCubit(transactionHiveBox: serviceLocator()));
+  serviceLocator.registerFactory(
+    () => ScanCubit(processImageUsecase: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => ReviewCubit(transactionHiveBox: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => AddTransactionCubit(addTransactionUsecase: serviceLocator()),
+  );
 }

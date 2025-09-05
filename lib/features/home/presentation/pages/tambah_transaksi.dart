@@ -1,13 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
+import 'package:save_up/features/home/presentation/cubit/add_transaction/add_transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/widgets/filter_button.dart';
+import 'package:save_up/features/home/presentation/widgets/form_jumlah.dart';
+import 'package:save_up/features/home/presentation/widgets/form_kategori.dart';
+import 'package:save_up/features/home/presentation/widgets/form_nama.dart';
+import 'package:save_up/features/home/presentation/widgets/form_tanggal.dart';
 import 'package:save_up/features/home/presentation/widgets/tambah_transaksi_button.dart';
 
-class TambahTransaksi extends StatelessWidget {
+class TambahTransaksi extends StatefulWidget {
   const TambahTransaksi({super.key});
 
   @override
+  State<TambahTransaksi> createState() => _TambahTransaksiState();
+}
+
+class _TambahTransaksiState extends State<TambahTransaksi> {
+  final TextEditingController _jumlahController = TextEditingController();
+  final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _tanggalController = TextEditingController();
+  String _selectedCategory = 'Makanan & Minuman';
+  DateTime _selectedDate = DateTime.now();
+
+  String _getMonthName(int month) {
+    const monthNames = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    return monthNames[month - 1];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tanggalController.text =
+        '${_selectedDate.day} ${_getMonthName(_selectedDate.month)} ${_selectedDate.year}';
+  }
+
+  @override
+  void dispose() {
+    _namaController.dispose();
+    _jumlahController.dispose();
+    _tanggalController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = PageController();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -20,197 +72,86 @@ class TambahTransaksi extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          spacing: 30,
-          children: [
-            FilterButton(onTapPengeluaran: () {}, onTapPemasukan: () {}),
-            Column(
+      body: BlocListener<AddTransactionCubit, AddTransactionState>(
+        listener: (context, state) {
+          if (state is AddTransactionSuccess) {
+            Navigator.pushNamed(context, '/transaksi-terkini');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Transaksi berhasil ditambahkan!')),
+            );
+          } else if (state is AddTransactionFailure) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Maaf coba lagi nanti')));
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: Column(
               spacing: 30,
               children: [
-                FormJumlah(),
-                FormKategori(),
-                FormTanggal(),
+                FilterButton(onTapPengeluaran: () {}, onTapPemasukan: () {}),
+                Column(
+                  spacing: 30,
+                  children: [
+                    FormNama(controller: _namaController),
+                    FormJumlah(controller: _jumlahController),
+                    FormKategori(
+                      selectedValue: _selectedCategory,
+                      onCategoryChanged: (String value) {
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                    ),
+                    FormTanggal(
+                      controller: _tanggalController,
+                      onTap: () async {
+                        final DateTime? picked = await showDatePicker(
+                          context: context,
+                          initialDate: _selectedDate,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                        );
+                        if (picked != null && picked != _selectedDate) {
+                          setState(() {
+                            _selectedDate = picked;
+                            _tanggalController.text =
+                                '${_selectedDate.day} ${_getMonthName(_selectedDate.month)} ${_selectedDate.year}';
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
-      bottomNavigationBar: TambahTransaksiButton(onTap: () {}),
-    );
-  }
-}
-
-class FormTanggal extends StatelessWidget {
-  const FormTanggal({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 8,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tanggal',
-          style: TextStyle(
-            color: const Color(0xFF333333) /* Text-Primary-text */,
-            fontSize: 12,
-            fontFamily: 'Plus Jakarta Sans',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(
-          height: 40,
-          child: TextFormField(
-            readOnly: true,
-            keyboardType: TextInputType.datetime,
-            onTap: () {
-              showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2101),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: TambahTransaksiButton(
+          onTap: () {
+            final amount = double.tryParse(_jumlahController.text);
+            if (amount != null &&
+                _namaController.text.isNotEmpty &&
+                _selectedCategory.isNotEmpty) {
+              context.read<AddTransactionCubit>().addTransaction(
+                name: _namaController.text,
+                amount: amount,
+                category: _selectedCategory,
+                date: _selectedDate,
               );
-            },
-            decoration: InputDecoration(
-              hint: Text(
-                '12 Juni 2025',
-                style: TextStyle(
-                  color: AppPallete.textPrimary,
-                  fontSize: 10,
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey.shade400),
-              ),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.cancel_outlined),
-                onPressed: () {},
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 25,
-                horizontal: 15,
-              ),
-            ),
-          ),
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Semua field harus diisi')),
+              );
+            }
+          },
         ),
-      ],
-    );
-  }
-}
-
-class FormKategori extends StatelessWidget {
-  const FormKategori({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 5,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Jumlah',
-          style: TextStyle(
-            color: const Color(0xFF333333) /* Text-Primary-text */,
-            fontSize: 12,
-            fontFamily: 'Plus Jakarta Sans',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(
-          height: 40,
-          child: DropdownButtonFormField(
-            items: [
-                'Makanan & Minuman',
-                'Investasi',
-                'Laundry',
-                'Belanja',
-                'Uang Masuk',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            onChanged: (_) {},
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              hint: Text(
-                'Makanan & Minuman',
-                style: TextStyle(
-                  color: AppPallete.textPrimary /* Text-Primary-text */,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 35,
-                horizontal: 15,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class FormJumlah extends StatelessWidget {
-  const FormJumlah({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 5,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Jumlah',
-          style: TextStyle(
-            color: const Color(0xFF333333) /* Text-Primary-text */,
-            fontSize: 12,
-            fontFamily: 'Plus Jakarta Sans',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(
-          height: 40,
-          child: TextFormField(
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 25,
-                horizontal: 15,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              suffixIcon: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.cancel_outlined),
-              ),
-
-              hint: Text(
-                '20.000',
-                style: TextStyle(
-                  color: AppPallete.textPrimary /* Text-Primary-text */,
-                  fontSize: 10,
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

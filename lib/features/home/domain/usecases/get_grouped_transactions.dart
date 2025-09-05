@@ -1,10 +1,10 @@
 import 'package:save_up/features/scan/domain/entities/transaksi.dart';
 import 'package:save_up/features/home/domain/repositories/transaction_repository.dart';
 
-class GetGroupedTransactions {
+class FetchGroupedTransactions {
   final TransactionRepository repository;
 
-  GetGroupedTransactions(this.repository);
+  FetchGroupedTransactions(this.repository);
 
   Future<Map<DateTime, List<Transaksi>>> call() async {
     return await repository.getGroupedTransactionsFromHive();

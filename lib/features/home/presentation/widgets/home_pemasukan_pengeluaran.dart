@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -92,7 +91,7 @@ class HomePemasukanPengeluaran extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    width: 163,
+                    width: MediaQuery.sizeOf(context).width/2.7,
                     decoration: BoxDecoration(
                       border: Border.all(color: Color(0xFF98ADC7), width: 0.47),
                       borderRadius: BorderRadius.circular(7.58),
@@ -124,7 +123,7 @@ class HomePemasukanPengeluaran extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 163,
+                    width:  MediaQuery.sizeOf(context).width/2.7,
                     decoration: BoxDecoration(
                       border: Border.all(color: Color(0xFF98ADC7), width: 0.47),
                       borderRadius: BorderRadius.circular(7.58),

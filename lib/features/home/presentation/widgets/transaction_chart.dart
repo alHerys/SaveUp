@@ -189,7 +189,20 @@ class TransactionChartState extends State<TransactionChart> {
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    final titles = <String>['Mn', 'Te', 'Wd', 'Tu', 'Fr', 'St', 'Su'];
+    final titles = <String>[
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
 
     final Widget text = Text(
       titles[value.toInt()],

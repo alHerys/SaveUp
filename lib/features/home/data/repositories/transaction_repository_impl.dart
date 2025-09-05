@@ -5,14 +5,14 @@ import '../../../scan/domain/entities/transaksi.dart';
 import '../../domain/repositories/transaction_repository.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
-  final Box<Transaksi> transactionsBox;
+  final Box<Transaksi> hiveBox;
 
-  TransactionRepositoryImpl(this.transactionsBox);
+  const TransactionRepositoryImpl({required this.hiveBox});
 
   @override
   Future<List<Transaksi>> getTransactionsFromHive() async{
     try {
-      final transactions = transactionsBox.values.toList().cast<Transaksi>()
+      final transactions = hiveBox.values.toList().cast<Transaksi>()
         ..sort((a, b) => b.date.compareTo(a.date));
         return transactions;
     } catch (e) {
@@ -23,7 +23,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Map<DateTime, List<Transaksi>>> getGroupedTransactionsFromHive() async {
     try {
-      final transactions = transactionsBox.values.toList().cast<Transaksi>()
+      final transactions = hiveBox.values.toList().cast<Transaksi>()
         ..sort((a, b) => b.date.compareTo(a.date));
 
       final groupedData = groupBy<Transaksi, DateTime>(
@@ -37,6 +37,15 @@ class TransactionRepositoryImpl implements TransactionRepository {
       return groupedData;
     } catch (e) {
       throw Exception('Failed to retrieve grouped transactions: $e');
+    }
+  }
+  
+  @override
+  Future<void> saveTransaction(Transaksi transaction) async {
+    try {
+      hiveBox.put(transaction.id, transaction);
+    } catch (e) {
+      throw Exception('Failed to save transaction: $e');
     }
   }
 }

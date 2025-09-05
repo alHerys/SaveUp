@@ -43,7 +43,7 @@ class OnboardingContent extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 53.8),
+        SizedBox(height: 45.8),
       ],
     );
   }

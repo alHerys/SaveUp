@@ -1,12 +1,12 @@
 import "../repositories/scan_repository.dart";
 import '../entities/transaksi.dart';
 
-class SaveTransactionsUsecase {
+class SaveTransactionsList {
   final ScanRepository repository;
 
-  SaveTransactionsUsecase(this.repository);
+  SaveTransactionsList({required this.repository});
 
   Future<void> call(List<Transaksi> transactions) async {
-    await repository.saveTransactions(transactions);
+    await repository.saveTransactionsList(transactions);
   }
 }

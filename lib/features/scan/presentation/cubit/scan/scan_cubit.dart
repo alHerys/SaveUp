@@ -11,7 +11,7 @@ import 'package:save_up/features/scan/domain/usecases/process_image_usecase.dart
 part 'scan_state.dart';
 
 class ScanCubit extends Cubit<ScanState> {
-  final ProcessImageUsecase processImageUsecase;
+  final GeminiProcessImage processImageUsecase;
   ScanCubit({required this.processImageUsecase}) : super(ScanInitial());
 
   void requestImage(ImageSource imageSource) async {

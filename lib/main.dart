@@ -8,6 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
+import 'package:save_up/features/home/presentation/cubit/add_transaction/add_transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
 import 'package:save_up/features/home/presentation/cubit/transaction/transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
@@ -42,7 +43,9 @@ void main() async {
 
   // Get It Dependency Injection
   dependencyinject.start();
-  
+
+
+
   runApp(const MyApp());
 }
 
@@ -62,6 +65,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               dependencyinject.serviceLocator<TransactionCubit>(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              dependencyinject.serviceLocator<AddTransactionCubit>(),
         ),
       ],
       child: MaterialApp(
@@ -115,6 +122,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  
   @override
   void initState() {
     context.read<TransactionCubit>().loadTransactionFromHive();
@@ -155,7 +163,10 @@ class _MainPageState extends State<MainPage> {
                   padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).padding.bottom,
                   ),
-                  child: Navbar(tabIndex: state.tabIndex),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Navbar(tabIndex: state.tabIndex),
+                  ),
                 )
               : null,
         );

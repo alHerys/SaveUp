@@ -6,7 +6,7 @@ import 'package:save_up/features/scan/domain/usecases/save_transactions_usecase.
 part 'review_state.dart';
 
 class ReviewCubit extends Cubit<ReviewState> {
-  final SaveTransactionsUsecase transactionHiveBox;
+  final SaveTransactionsList transactionHiveBox;
   ReviewCubit({required this.transactionHiveBox}) : super(ReviewInitial());
 
   void loadReviewTransactions(List<Transaksi> transactions) {
