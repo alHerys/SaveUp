@@ -117,7 +117,7 @@ class _ReviewPageState extends State<ReviewPage> {
             }
           },
           builder: (context, state) {
-            if (state is ReviewLoaded) {
+            if (state is ReviewGetter) {
               return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
@@ -171,10 +171,9 @@ class _ReviewPageState extends State<ReviewPage> {
                     ),
                   ),
                 ),
-                bottomNavigationBar: ReviewSafeButton(
+                bottomNavigationBar: ReviewSaveButton(
                   onTap: () {
                     context.read<ReviewCubit>().saveTransaction(state.transactions);
-                    Navigator.pushNamed(context, '/transaksi-terkini');
                   },
                 ),
               );
@@ -186,9 +185,9 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 }
 
-class ReviewSafeButton extends StatelessWidget {
+class ReviewSaveButton extends StatelessWidget {
   final VoidCallback onTap;
-  const ReviewSafeButton({super.key, required this.onTap});
+  const ReviewSaveButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:save_up/features/scan/entities/transaksi.dart';
 

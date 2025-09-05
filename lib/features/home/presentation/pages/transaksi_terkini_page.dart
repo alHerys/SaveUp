@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 
-List<String> months = [
+const List<String> months = [
   'Jan',
   'Feb',
   'Mar',
@@ -27,7 +27,7 @@ class TransaksiTerkiniPage extends StatelessWidget {
         centerTitle: true,
         leading: GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           },
           child: Padding(
             padding: const EdgeInsets.only(left: 20.0),

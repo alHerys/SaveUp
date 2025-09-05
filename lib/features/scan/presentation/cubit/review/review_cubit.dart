@@ -9,19 +9,20 @@ class ReviewCubit extends Cubit<ReviewState> {
   ReviewCubit() : super(ReviewInitial());
 
   void loadReviewTransactions(List<Transaksi> transactions) {
-    emit(ReviewLoaded(transactions));
+    emit(ReviewGetter(transactions));
   }
 
-  void saveTransaction(List<Transaksi> transactions) async {
+  Future<void> saveTransaction(List<Transaksi> transactions) async {
     try {
       emit(ReviewLoading());
       final Box box = Hive.box<Transaksi>('transaksiBox');
       for (var element in transactions) {
-        await box.put(element.id, transactions);
+        await box.put(element.id, element);
       }
       emit(ReviewSaveSuccess());
     } catch (e) {
       emit(ReviewFailure());
+      print(e);
     }
   } 
 }

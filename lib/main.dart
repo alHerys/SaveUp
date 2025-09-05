@@ -8,6 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
 import 'package:save_up/features/asisten/presentation/pages/asisten_page.dart';
 import 'package:save_up/features/home/presentation/cubit/navbar/navbar_cubit.dart';
+import 'package:save_up/features/home/presentation/cubit/transaction/transaction_cubit.dart';
 import 'package:save_up/features/home/presentation/pages/home_page.dart';
 import 'package:save_up/features/home/presentation/pages/transaksi_terkini_page.dart';
 import 'package:save_up/features/home/presentation/widgets/navbar.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => NavbarCubit()),
         BlocProvider(create: (context) => ScanCubit()),
         BlocProvider(create: (context) => ReviewCubit()),
+        BlocProvider(create: (context) => TransactionCubit())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -89,6 +91,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  @override
+  void initState() {
+    context.read<TransactionCubit>().loadTransactionFromHive();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NavbarCubit, NavbarCubitState>(
