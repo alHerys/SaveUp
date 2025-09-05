@@ -1,9 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:save_up/core/themes/app_pallete.dart';
 
 class HomePemasukanPengeluaran extends StatelessWidget {
-  const HomePemasukanPengeluaran({super.key});
+  final VoidCallback onTapTambahTransaksi;
+  const HomePemasukanPengeluaran({
+    super.key,
+    required this.onTapTambahTransaksi,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +36,24 @@ class HomePemasukanPengeluaran extends StatelessWidget {
               ),
             ],
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'Tambah Transaksi',
-                style: TextStyle(
-                  color: AppPallete.primary,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
+          child: GestureDetector(
+            onTap: onTapTambahTransaksi,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Tambah Transaksi',
+                  style: TextStyle(
+                    color: AppPallete.primary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-              ),
-
-              SvgPicture.asset('assets/icons/Tambah Transaksi.svg'),
-            ],
+            
+                SvgPicture.asset('assets/icons/Tambah Transaksi.svg'),
+              ],
+            ),
           ),
         ),
         Container(

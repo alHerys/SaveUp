@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:save_up/core/themes/app_pallete.dart';
+import 'package:save_up/features/home/presentation/pages/tambah_transaksi.dart';
 import 'package:save_up/features/home/presentation/widgets/home_anggaran.dart';
 import 'package:save_up/features/home/presentation/widgets/home_laporan.dart';
 import 'package:save_up/features/home/presentation/widgets/home_pemasukan_pengeluaran.dart';
 import 'package:save_up/features/home/presentation/widgets/home_transaksi_terkini.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({
-    super.key,
-  });
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +106,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-    
+
           Container(
             margin: EdgeInsets.only(
               top: 140 + statusBarHeight,
@@ -117,12 +116,21 @@ class HomePage extends StatelessWidget {
             child: Column(
               spacing: 20,
               children: [
-                HomePemasukanPengeluaran(),
-    
+                HomePemasukanPengeluaran(
+                  onTapTambahTransaksi: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TambahTransaksi(),
+                      ),
+                    );
+                  },
+                ),
+
                 HomeTransaksiTerkini(),
-    
+
                 HomeAnggaran(),
-    
+
                 HomeLaporan(),
               ],
             ),
