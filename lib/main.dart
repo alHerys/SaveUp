@@ -24,23 +24,25 @@ import 'package:save_up/get_it_service.dart' as dependencyinject;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Hive Init
   await Hive.initFlutter();
+
+  // Hive Adapter
   Hive.registerAdapter(TransaksiAdapter());
+
+  // Setup intl Date Format
   await initializeDateFormatting('id_ID', null);
+
+  // Setup Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Setup Hive Box
   await Hive.openBox<Transaksi>('transaksiBox');
 
-  // // Data Layer
-  // final transactionRepository = TransactionRepositoryImpl(transactionBox);
-  // final scanRepository = ScanRepositoryImpl(transactionBox);
-
-  // // Domain Layer (Use Cases)
-  // final getTransactions = GetTransactions(transactionRepository);
-  // final getGroupedTransactions = GetGroupedTransactions(transactionRepository);
-  // final processImage = ProcessImageUsecase(scanRepository);
-  // final saveTransactions = SaveTransactionsUsecase(scanRepository);
-
-  dependencyinject.setup();
+  // Get It Dependency Injection
+  dependencyinject.start();
+  
   runApp(const MyApp());
 }
 

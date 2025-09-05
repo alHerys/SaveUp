@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:save_up/features/scan/domain/entities/transaksi.dart';
 import 'package:save_up/features/scan/domain/usecases/save_transactions_usecase.dart';

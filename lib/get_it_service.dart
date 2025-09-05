@@ -15,7 +15,7 @@ import 'features/scan/domain/repositories/scan_repository.dart';
 
 final serviceLocator = GetIt.instance;
 
-void setup() {
+void start() {
   // Hive Box
   serviceLocator.registerSingleton<Box<Transaksi>>(
     Hive.box<Transaksi>('transaksiBox'),
