@@ -1,4 +1,5 @@
 # SaveUp 💸
+<img width="720" height="430" alt="Screenshot 2026-09-09 at 06 46 00" src="https://github.com/user-attachments/assets/6f0ba575-9710-4c72-9c39-ef8a61635af3" />
 
 **Your smart and friendly financial companion!**
 
